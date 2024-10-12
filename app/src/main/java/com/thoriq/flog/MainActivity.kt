@@ -38,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thoriq.flog.ui.screen.HomeScreen
+import com.thoriq.flog.ui.screen.CameraScreen
 import com.thoriq.flog.ui.theme.FLogTheme
 
 data class TabBarItem(
@@ -56,12 +57,13 @@ class MainActivity : ComponentActivity() {
 
             val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
             val fishesTab = TabBarItem(title = "Alerts", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications)
+            val cameraTab = TabBarItem(title = "Camera", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications)
             val settingsTab = TabBarItem(title = "Settings", selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings)
             val accountTab = TabBarItem(title = "More", selectedIcon = Icons.Filled.List, unselectedIcon = Icons.Outlined.List)
 //            val scanTab
             
             // creating a list of all the tabs
-            val tabBarItems = listOf(homeTab, fishesTab, settingsTab, accountTab)
+            val tabBarItems = listOf(homeTab, fishesTab,cameraTab, settingsTab, accountTab)
 
             // creating our navController
             val navController = rememberNavController()
@@ -80,6 +82,16 @@ class MainActivity : ComponentActivity() {
                             composable(fishesTab.title) {
                                 Text(fishesTab.title)
 //                                TODO("Tambahin Alert()")
+                            }
+                            composable(cameraTab.title) {
+                                CameraScreen(
+                                    question = "What is this fish?",
+                                    onImageIdentified = { identifiedText ->
+                                        // Handle the identified text
+                                        println("Identified Image: $identifiedText")
+                                    }
+                                )
+//                                TODO("Tambahin Camera()")
                             }
                             composable(settingsTab.title) {
                                 Text(settingsTab.title)
