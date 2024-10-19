@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -61,8 +62,16 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+//    Gemini AI
     implementation(libs.generativeai)
-    implementation("io.coil-kt:coil-compose:2.4.0")
+//    Coil
+    implementation(libs.coil.compose)
+//    LoopJ Async
+    implementation(libs.android.async.http)
+//    Location services
+    implementation(libs.play.services.location)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
