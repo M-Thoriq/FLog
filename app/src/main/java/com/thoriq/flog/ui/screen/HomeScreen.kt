@@ -37,7 +37,7 @@ import com.thoriq.flog.ui.theme.BlueF
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = Modifier
@@ -81,18 +81,25 @@ fun WeatherCard(modifier: Modifier = Modifier) {
     val degree = "23" + "°C"
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .background(BlueF)
-            .padding(vertical = 24.dp, horizontal = 36.dp)
     ) {
-//        TODO("BRA NANTI INI IMAGENYA BUAT KONDISIONAL GITU JADI KALO HUJANNYA DERAS BEDA FOTO ETC")
-        Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "Gaada")
-        Text(degree, fontSize = 48.sp, color = Color.White, fontWeight = FontWeight.Medium)
-    }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 24.dp)
+        ) {
+    //        TODO("BRA NANTI INI IMAGENYA BUAT KONDISIONAL GITU JADI KALO HUJANNYA DERAS BEDA FOTO ETC")
+            Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "Gaada")
+            Text(degree, fontSize = 48.sp, color = Color.White, fontWeight = FontWeight.Medium)
+        }
+
+        }
 }
 
 @Preview

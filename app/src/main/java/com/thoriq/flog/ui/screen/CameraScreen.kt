@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,9 +33,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Precision
-import com.thoriq.flog.config.GeminiModel
+import com.thoriq.flog.viewModel.GeminiModel
 import com.thoriq.flog.config.ImageInterpretationUiState
-import com.thoriq.flog.config.ImageInterpretationViewModel
+import com.thoriq.flog.viewModel.ImageInterpretationViewModel
 import kotlinx.coroutines.launch
 
 import android.content.ContentValues

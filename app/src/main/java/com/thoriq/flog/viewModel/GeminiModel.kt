@@ -1,4 +1,4 @@
-package com.thoriq.flog.config
+package com.thoriq.flog.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
