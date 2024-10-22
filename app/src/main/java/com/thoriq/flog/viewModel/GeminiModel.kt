@@ -1,5 +1,6 @@
 package com.thoriq.flog.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -24,7 +25,7 @@ val GeminiModel = object : ViewModelProvider.Factory {
                     // for multimodal text generation
                     val generativeModel = GenerativeModel(
                         modelName = "gemini-1.5-pro",
-                        apiKey = BuildConfig.API_KEY,
+                        apiKey = BuildConfig.GEMINI,
                         generationConfig = config
                     )
                     ImageInterpretationViewModel(generativeModel)

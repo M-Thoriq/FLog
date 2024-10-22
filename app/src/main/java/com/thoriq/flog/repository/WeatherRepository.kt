@@ -26,10 +26,13 @@ import kotlin.coroutines.resume
 
 class WeatherRepository(private var context: Context) {
 
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+    companion object  {
+        private var latitude: Double = 0.0
+        private var longitude: Double = 0.0
+        var mLocation: Location? = null
+    }
+
     private val requestPermissionCode = 1
-    private var mLocation: Location? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private fun saveWeatherData(context: Context, weatherList: List<Weather>) {

@@ -5,15 +5,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -36,15 +44,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
-import com.thoriq.flog.ui.component.WeathersCard
+import com.thoriq.flog.ui.screen.AccountScreen
 import com.thoriq.flog.ui.screen.HomeScreen
 import com.thoriq.flog.ui.screen.CameraScreen
+import com.thoriq.flog.ui.screen.MapsScreen
 import com.thoriq.flog.ui.theme.FLogTheme
 
 data class TabBarItem(
@@ -73,13 +83,13 @@ class MainActivity : ComponentActivity() {
             }
 
             val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
-            val fishesTab = TabBarItem(title = "Alerts", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications)
+            val fishesTab = TabBarItem(title = "Fishes", selectedIcon = Icons.Filled.Build, unselectedIcon = Icons.Outlined.Build)
             val cameraTab = TabBarItem(title = "Camera", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications)
-            val settingsTab = TabBarItem(title = "Settings", selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings)
-            val accountTab = TabBarItem(title = "More", selectedIcon = Icons.Filled.List, unselectedIcon = Icons.Outlined.List)
+            val mapsTab = TabBarItem(title = "Maps", selectedIcon = Icons.Filled.LocationOn, unselectedIcon = Icons.Outlined.LocationOn)
+            val accountTab = TabBarItem(title = "Account", selectedIcon = Icons.Filled.Person, unselectedIcon = Icons.Outlined.Person)
             
             // creating a list of all the tabs
-            val tabBarItems = listOf(homeTab, fishesTab,cameraTab, settingsTab, accountTab)
+            val tabBarItems = listOf(homeTab, fishesTab,cameraTab, mapsTab, accountTab)
 
             // creating our navController
             val navController = rememberNavController()
@@ -90,14 +100,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold(bottomBar = { TabView(tabBarItems, navController) }) {
+                    Scaffold(bottomBar = { TabView(tabBarItems, navController) }) { paddingValues ->
                         NavHost(navController = navController, startDestination = homeTab.title) {
                             composable(homeTab.title) {
                                 HomeScreen()
                             }
                             composable(fishesTab.title) {
                                 Text(fishesTab.title)
-//                                TODO("Tambahin Alert()")
+//                                TODO\("Tambahin Alert\(\)")
                             }
                             composable(cameraTab.title) {
                                 CameraScreen(
@@ -107,14 +117,16 @@ class MainActivity : ComponentActivity() {
                                         println("Identified Image: $identifiedText")
                                     }
                                 )
-//                                TODO("Tambahin Camera()")
+//                                TODO\("Tambahin Camera\(\)")
                             }
-                            composable(settingsTab.title) {
-                                Text(settingsTab.title)
-//                                TODO("Tambahin HomeScreen()")
+                            composable(mapsTab.title) {
+                                MapsScreen(
+                                    modifier = Modifier.padding(paddingValues),
+                                    paddingValues = PaddingValues(0.dp)
+                                )
                             }
                             composable(accountTab.title) {
-                                MoreView()
+                                AccountScreen()
                             }
                         }
                     }
