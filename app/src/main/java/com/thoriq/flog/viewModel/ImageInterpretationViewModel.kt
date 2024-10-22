@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONObject
 
 class ImageInterpretationViewModel(
@@ -92,7 +89,6 @@ class ImageInterpretationViewModel(
             description = jsonObject.optString("short_description", "No description available")
 
             // Optionally, you can also extract the image link if you need it
-            val imageLink = jsonObject.optString("image_link", "none")
 
 
         } catch (e: Exception) {
