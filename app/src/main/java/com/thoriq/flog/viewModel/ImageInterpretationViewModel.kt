@@ -1,6 +1,7 @@
 package com.thoriq.flog.viewModel
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
@@ -11,6 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
+import org.json.JSONObject
 
 class ImageInterpretationViewModel(
     private val generativeModel: GenerativeModel
@@ -20,6 +25,9 @@ class ImageInterpretationViewModel(
         MutableStateFlow(ImageInterpretationUiState.Initial)
     val uiState: StateFlow<ImageInterpretationUiState> =
         _uiState.asStateFlow()
+
+    var fish: String = ""
+    var description: String = ""
 
     fun reason(
         userInput: String,
@@ -39,15 +47,13 @@ class ImageInterpretationViewModel(
         {
             "name": "string",
             "short_description": "string",
-            "accuracy": accuracy percentage of the fish name
         }
         
         if its not a fish, then return the following:
         
         {
             "name": "Not a fish",
-            "short_description": "The provided image(s) do not contain a fish.",
-            "accuracy": 0
+            "short_description": "The provided image(s) do not contain a fish."
         }
     """
 
@@ -67,11 +73,31 @@ class ImageInterpretationViewModel(
                 generativeModel.generateContentStream(inputContent)
                     .collect { response ->
                         outputContent += response.text
-                        _uiState.value = ImageInterpretationUiState.Success(outputContent)
                     }
+                parseJsonAndAssignVariables(outputContent)
+                _uiState.value = ImageInterpretationUiState.Success(fish, description)
             } catch (e: Exception) {
                 _uiState.value = ImageInterpretationUiState.Error(e.localizedMessage ?: "")
             }
+        }
+
+    }
+    private fun parseJsonAndAssignVariables(outputContent: String) {
+        try {
+            // Parse the JSON response
+            val jsonObject = JSONObject(outputContent)
+
+            // Extract the name and short_description from the JSON
+            fish = jsonObject.optString("name", "Unknown")
+            description = jsonObject.optString("short_description", "No description available")
+
+            // Optionally, you can also extract the image link if you need it
+            val imageLink = jsonObject.optString("image_link", "none")
+
+
+        } catch (e: Exception) {
+            // Handle any parsing errors
+            _uiState.value = ImageInterpretationUiState.Error("Failed to parse JSON: ${e.localizedMessage}")
         }
     }
 }

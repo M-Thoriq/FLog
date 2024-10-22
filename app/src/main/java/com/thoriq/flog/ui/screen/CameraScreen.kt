@@ -42,7 +42,15 @@ import android.content.ContentValues
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun CameraScreen(
@@ -146,29 +154,43 @@ fun CameraScreen(
             }
 
             is ImageInterpretationUiState.Success -> {
-                onImageIdentified((imageInterpretationUiState as ImageInterpretationUiState.Success).outputText)
+                onImageIdentified((imageInterpretationUiState as ImageInterpretationUiState.Success).fish)
+
                 Card(
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                         .fillMaxWidth(),
                     shape = MaterialTheme.shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = Color(0XFF02D2A8))
+                    colors = CardDefaults.cardColors(containerColor = Color(0XFFFFFFFF))
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .padding(all = 16.dp)
                             .fillMaxWidth()
                     ) {
+                        // Title text - fish name
                         Text(
-                            text = (imageInterpretationUiState as ImageInterpretationUiState.Success).outputText,
-                            color = Color(0xFFF9FFFF),
-                            modifier = Modifier
-                                .padding(start = 16.dp)
-                                .fillMaxWidth()
+                            text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish, // Use fish as title
+                            color = Color(0xFF000000),
+                            fontSize = 20.sp, // Set the font size manually for the title
+                            fontWeight = FontWeight.Bold, // Set font weight to bold for the title
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp)) // Add spacing between title and description
+
+                        // Description text
+                        Text(
+                            text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description, // Use description as body text
+                            color = Color(0xFF000000),
+                            fontSize = 16.sp, // Set the font size manually for the description
+                            fontWeight = FontWeight.Normal, // Normal font weight for the description
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
             }
+
 
             is ImageInterpretationUiState.Error -> {
                 Card(
