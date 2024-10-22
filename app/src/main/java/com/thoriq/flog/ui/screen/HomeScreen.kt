@@ -52,7 +52,7 @@ fun HomeScreen(
 @Composable
 fun GreetingSection(modifier: Modifier = Modifier) {
     Row(
-        horizontalArrangement = Arrangement.Start,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
@@ -83,9 +83,9 @@ fun WeatherCard(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(horizontal = 20.dp)
-            .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .background(BlueF)
+            .clip(RoundedCornerShape(8.dp))
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
