@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -18,9 +19,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField("String", "API_KEY", "\"AIzaSyCawJFYaNIltRc_OFU-hnO9uKu97DVyVXg\"")
-
     }
+
 
     buildTypes {
         release {
@@ -71,6 +71,12 @@ dependencies {
     implementation(libs.android.async.http)
 //    Location services
     implementation(libs.play.services.location)
+//    Google Maps SDK
+    implementation("com.google.maps.android:maps-compose:4.3.3")
+//    Maps SDK Utility
+    implementation("com.google.maps.android:maps-compose-utils:4.3.3")
+//    Maps SDK Widgets
+    implementation("com.google.maps.android:maps-compose-widgets:4.3.3")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -79,4 +85,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+
+    defaultPropertiesFileName = "local.properties"
 }
