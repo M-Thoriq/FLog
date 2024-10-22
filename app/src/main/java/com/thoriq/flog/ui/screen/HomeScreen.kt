@@ -47,6 +47,8 @@ import com.thoriq.flog.data.Weatheribra
 import com.thoriq.flog.repository.Weatheribrabesar
 import com.thoriq.flog.ui.theme.BlueF
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
+
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -160,7 +162,7 @@ fun WeatherCard(
                 }
             }
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(horizontal = 12.dp),
             thickness = 1.dp,
             color = Color.LightGray
