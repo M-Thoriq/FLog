@@ -7,6 +7,9 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -62,7 +65,6 @@ class WeatherRepository(private var context: Context) {
                 context,
                 ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermission()
             cont.resume(null)
         } else {
             fusedLocationClient.lastLocation
@@ -82,15 +84,6 @@ class WeatherRepository(private var context: Context) {
                     cont.resume(null)
                 }
         }
-    }
-
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            context as Activity,
-            arrayOf(ACCESS_FINE_LOCATION),
-            requestPermissionCode
-        )
-        (context as Activity).recreate()
     }
 
     private fun loadWeatherData(context: Context): List<Weather>? {

@@ -1,9 +1,12 @@
 package com.thoriq.flog
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +48,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,7 +65,7 @@ data class TabBarItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val badgeAmount: Int? = null
+    val badgeAmount: Int? = null,
 )
 
 class MainActivity : ComponentActivity() {
@@ -72,65 +76,113 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
-            val weathers = remember { mutableStateOf<List<Weather>>(emptyList()) }
+            var hasLocationPermission by remember { mutableStateOf(false) }
             val context = LocalContext.current
 
+            val requestPermissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                hasLocationPermission = isGranted
+            }
+
+            val weathers = remember { mutableStateOf<List<Weather>>(emptyList()) }
+
             LaunchedEffect(Unit) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                } else {
+                    hasLocationPermission = true
+                }
                 weatherRepository.fetchWeatherData(context) { weatherList ->
                     weathers.value = weatherList
                 }
             }
 
-            val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
-            val fishesTab = TabBarItem(title = "Fishes", selectedIcon = Icons.Filled.Build, unselectedIcon = Icons.Outlined.Build)
-            val cameraTab = TabBarItem(title = "Camera", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications)
-            val mapsTab = TabBarItem(title = "Maps", selectedIcon = Icons.Filled.LocationOn, unselectedIcon = Icons.Outlined.LocationOn)
-            val accountTab = TabBarItem(title = "Account", selectedIcon = Icons.Filled.Person, unselectedIcon = Icons.Outlined.Person)
-            
+            val homeTab = TabBarItem(
+                title = "Home",
+                selectedIcon = Icons.Filled.Home,
+                unselectedIcon = Icons.Outlined.Home
+            )
+            val fishesTab = TabBarItem(
+                title = "Fishes",
+                selectedIcon = Icons.Filled.Build,
+                unselectedIcon = Icons.Outlined.Build
+            )
+            val cameraTab = TabBarItem(
+                title = "Camera",
+                selectedIcon = Icons.Filled.Notifications,
+                unselectedIcon = Icons.Outlined.Notifications
+            )
+            val mapsTab = TabBarItem(
+                title = "Maps",
+                selectedIcon = Icons.Filled.LocationOn,
+                unselectedIcon = Icons.Outlined.LocationOn
+            )
+            val accountTab = TabBarItem(
+                title = "Account",
+                selectedIcon = Icons.Filled.Person,
+                unselectedIcon = Icons.Outlined.Person
+            )
+
             // creating a list of all the tabs
-            val tabBarItems = listOf(homeTab, fishesTab,cameraTab, mapsTab, accountTab)
+            val tabBarItems = listOf(homeTab, fishesTab, cameraTab, mapsTab, accountTab)
 
             // creating our navController
             val navController = rememberNavController()
 
-            FLogTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Scaffold(bottomBar = { TabView(tabBarItems, navController) }) { paddingValues ->
-                        NavHost(navController = navController, startDestination = homeTab.title) {
-                            composable(homeTab.title) {
-                                HomeScreen()
-                            }
-                            composable(fishesTab.title) {
-                                Text(fishesTab.title)
+            if (hasLocationPermission) {
+                FLogTheme {
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        Scaffold(bottomBar = {
+                            TabView(
+                                tabBarItems,
+                                navController
+                            )
+                        }) { paddingValues ->
+                            NavHost(
+                                navController = navController,
+                                startDestination = homeTab.title
+                            ) {
+                                composable(homeTab.title) {
+                                    HomeScreen()
+                                }
+                                composable(fishesTab.title) {
+                                    Text(fishesTab.title)
 //                                TODO\("Tambahin Alert\(\)")
-                            }
-                            composable(cameraTab.title) {
-                                CameraScreen(
-                                    question = "What is this fish?",
-                                    onImageIdentified = { identifiedText ->
-                                        // Handle the identified text
-                                        println("Identified Image: $identifiedText")
-                                    }
-                                )
+                                }
+                                composable(cameraTab.title) {
+                                    CameraScreen(
+                                        question = "What is this fish?",
+                                        onImageIdentified = { identifiedText ->
+                                            // Handle the identified text
+                                            println("Identified Image: $identifiedText")
+                                        }
+                                    )
 //                                TODO\("Tambahin Camera\(\)")
-                            }
-                            composable(mapsTab.title) {
-                                MapsScreen(
-                                    modifier = Modifier.padding(paddingValues),
-                                    paddingValues = PaddingValues(0.dp)
-                                )
-                            }
-                            composable(accountTab.title) {
-                                AccountScreen()
+                                }
+                                composable(mapsTab.title) {
+                                    MapsScreen(
+                                        modifier = Modifier.padding(paddingValues),
+                                        paddingValues = PaddingValues(0.dp)
+                                    )
+                                }
+                                composable(accountTab.title) {
+                                    AccountScreen()
+                                }
                             }
                         }
                     }
                 }
+            } else {
+                Text("Location permission is required")
             }
         }
     }
@@ -159,7 +211,7 @@ fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {
                         badgeAmount = tabBarItem.badgeAmount
                     )
                 },
-                label = {Text(tabBarItem.title)})
+                label = { Text(tabBarItem.title) })
         }
     }
 }
@@ -171,11 +223,15 @@ fun TabBarIconView(
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
     title: String,
-    badgeAmount: Int? = null
+    badgeAmount: Int? = null,
 ) {
     BadgedBox(badge = { TabBarBadgeView(badgeAmount) }) {
         Icon(
-            imageVector = if (isSelected) {selectedIcon} else {unselectedIcon},
+            imageVector = if (isSelected) {
+                selectedIcon
+            } else {
+                unselectedIcon
+            },
             contentDescription = title
         )
     }
