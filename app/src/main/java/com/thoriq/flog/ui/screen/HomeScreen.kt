@@ -1,33 +1,23 @@
 package com.thoriq.flog.ui.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,9 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoriq.flog.CustomItem
 import com.thoriq.flog.R
-import com.thoriq.flog.data.Weatheribra
-import com.thoriq.flog.repository.Weatheribrabesar
-import com.thoriq.flog.ui.theme.BlueF
+import com.thoriq.flog.repository.WeatherPreviewRepository
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 
@@ -182,14 +170,14 @@ fun WeatherCard(
             thickness = 1.dp,
             color = Color.LightGray
         )
-        val weatheribraRepository = Weatheribrabesar()
-        val getAllData = weatheribraRepository.getAllData()
+        val weatherPrev = WeatherPreviewRepository()
+        val getAllData = weatherPrev.getAllData()
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(29.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.padding(16.dp)
         ) {
-            items(items = getAllData){Weatheribra ->
-                CustomItem(weatheribra = Weatheribra)
+            items(items = getAllData){weatherPrev ->
+                CustomItem(weatherPreview = weatherPrev)
             }
     }
 }}
