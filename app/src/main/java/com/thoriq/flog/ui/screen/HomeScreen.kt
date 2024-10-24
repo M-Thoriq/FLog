@@ -59,6 +59,15 @@ fun HomeScreen(
             .verticalScroll(rememberScrollState())
     ) {
         GreetingSection()
+        WeatherCard(
+            temperature = "25°C",
+            condition = "Sunny",
+            location = "Jakarta",
+            highTemp = "H: 30°C",
+            lowTemp = "L: 20°C",
+            time = "9 AM",
+            icon = R.drawable.ic_launcher_background
+        )
     }
 }
 
@@ -97,6 +106,7 @@ fun WeatherCard(
     location: String,
     highTemp: String,
     lowTemp: String,
+    time: String,
     icon: Int // Resource ID for the weather icon
 ) {
     Card(
@@ -114,10 +124,10 @@ fun WeatherCard(
         ) {
             // Weather Icon
             Icon(
-                painter = painterResource(id = icon),
+                painter = painterResource(id = R.drawable.snow_showers),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = Color.Gray // Adjust color as needed
+//                tint = Color.Gray // Adjust color as needed
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -134,6 +144,11 @@ fun WeatherCard(
                 Text(
                     text = condition,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+                Text(
+                    text = time,
+                    style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
             }
@@ -167,23 +182,15 @@ fun WeatherCard(
             thickness = 1.dp,
             color = Color.LightGray
         )
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+        val weatheribraRepository = Weatheribrabesar()
+        val getAllData = weatheribraRepository.getAllData()
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(29.dp),
+            modifier = Modifier.padding(16.dp)
         ) {
-            val weatheribraRepository = Weatheribrabesar()
-            val getAllData = weatheribraRepository.getAllData()
-
-            LazyRow(
-                contentPadding = PaddingValues(all = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(items = getAllData){Weatheribra ->
-                    CustomItem(weatheribra = Weatheribra)
-
-                    }
-        }
+            items(items = getAllData){Weatheribra ->
+                CustomItem(weatheribra = Weatheribra)
+            }
     }
 }}
 @Preview
@@ -195,6 +202,7 @@ private fun HomeScreenPrev() {
         location = "Jakarta",
         highTemp = "H: 30°C",
         lowTemp = "L: 20°C",
+        time = "9 AM",
         icon = R.drawable.ic_launcher_background // Replace with your weather icon resource
     )
 }

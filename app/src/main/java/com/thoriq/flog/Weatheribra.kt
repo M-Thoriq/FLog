@@ -51,9 +51,21 @@ fun CustomItem(weatheribra: Weatheribra) {
         modifier = Modifier
             .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = weatheribra.time)
-        Text(text = weatheribra.temperature)
-        Text(text = weatheribra.image)
+        Text(text = weatheribra.time,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray,
+            modifier = Modifier.padding(bottom = 4.dp),
+        )
+        Icon(painter = painterResource(id = weatheribra.image), contentDescription = "",
+            modifier = Modifier
+                .size(42.dp)
+                .clip(CircleShape)
+        )
+        Text(text = weatheribra.temperature,
+            style = MaterialTheme.typography.labelLarge,
+        )
+
     }
 }
