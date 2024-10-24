@@ -173,7 +173,7 @@ fun WeatherCard(
         val weatherPrev = WeatherPreviewRepository()
         val getAllData = weatherPrev.getAllData()
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(32.dp),
             modifier = Modifier.padding(16.dp)
         ) {
             items(items = getAllData){weatherPrev ->
