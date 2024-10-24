@@ -30,7 +30,8 @@ class WeatherPreviewRepository {
                 time = "2 PM",
                 temperature = "29" + "°C",
                 image = R.drawable.thunderstorm_hail
-            ),WeatherPreview(
+            ),
+            WeatherPreview(
                 time = "3 PM",
                 temperature = "25" + "°C",
                 image = R.drawable.foggy

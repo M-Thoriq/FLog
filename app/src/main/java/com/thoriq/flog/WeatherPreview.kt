@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.thoriq.flog.data.WeatherPreview
 
 @Composable
-fun CustomItem(weatherPreview: WeatherPreview) {
+fun WeatherPreviewItem(weatherPreview: WeatherPreview) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),

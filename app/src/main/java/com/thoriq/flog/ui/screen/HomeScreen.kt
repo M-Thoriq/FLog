@@ -28,14 +28,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thoriq.flog.CustomItem
+import com.thoriq.flog.WeatherPreviewItem
 import com.thoriq.flog.R
 import com.thoriq.flog.repository.WeatherPreviewRepository
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
+import com.thoriq.flog.RecentCatchItem
 
 @Composable
 fun HomeScreen(
@@ -51,11 +51,10 @@ fun HomeScreen(
             temperature = "25°C",
             condition = "Sunny",
             location = "Jakarta",
-            highTemp = "H: 30°C",
-            lowTemp = "L: 20°C",
             time = "9 AM",
             icon = R.drawable.ic_launcher_background
         )
+        RecentCatch()
     }
 }
 
@@ -68,12 +67,13 @@ fun GreetingSection(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .padding(18.dp)
     ) {
-        Box(modifier = Modifier.padding(8.dp)){
-            Image(painter = painterResource(id = R.drawable.akun), contentDescription = "Image Akun",
+        Box(modifier = Modifier.padding(8.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.akun), contentDescription = "Image Akun",
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                )
+            )
         }
 
         Column(
@@ -92,8 +92,6 @@ fun WeatherCard(
     temperature: String,
     condition: String,
     location: String,
-    highTemp: String,
-    lowTemp: String,
     time: String,
     icon: Int // Resource ID for the weather icon
 ) {
@@ -110,17 +108,14 @@ fun WeatherCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Weather Icon
             Icon(
                 painter = painterResource(id = R.drawable.snow_showers),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-//                tint = Color.Gray // Adjust color as needed
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Weather Information
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -134,14 +129,9 @@ fun WeatherCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
-                Text(
-                    text = time,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+
             }
 
-            // Temperature
             Column(
                 horizontalAlignment = Alignment.End
             ) {
@@ -152,14 +142,8 @@ fun WeatherCard(
                 )
                 Row {
                     Text(
-                        text = highTemp,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = lowTemp,
-                        style = MaterialTheme.typography.bodySmall,
+                        text = time,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = Color.Gray
                     )
                 }
@@ -176,21 +160,43 @@ fun WeatherCard(
             horizontalArrangement = Arrangement.spacedBy(32.dp),
             modifier = Modifier.padding(16.dp)
         ) {
-            items(items = getAllData){weatherPrev ->
-                CustomItem(weatherPreview = weatherPrev)
+            items(items = getAllData) { weatherPrev ->
+                WeatherPreviewItem(weatherPreview = weatherPrev)
             }
+        }
     }
-}}
-@Preview
+}
+
 @Composable
-private fun HomeScreenPrev() {
-    WeatherCard(
-        temperature = "25°C",
-        condition = "Sunny",
-        location = "Jakarta",
-        highTemp = "H: 30°C",
-        lowTemp = "L: 20°C",
-        time = "9 AM",
-        icon = R.drawable.ic_launcher_background // Replace with your weather icon resource
-    )
+fun RecentCatch(
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 2.dp)
+            .fillMaxWidth(),
+    ) {
+        Text(
+            text = "Recent Catch",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "View All >",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Blue
+        )
+    }
+    val recentCatch = com.thoriq.flog.repository.RecentCatchRepository()
+    val getAllData = recentCatch.getAllData()
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        modifier = Modifier.padding(16.dp)
+    ) {
+        items(items = getAllData) { recentCatch ->
+            RecentCatchItem(recentCatch = recentCatch)
+        }
+
+    }
 }
