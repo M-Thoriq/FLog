@@ -57,6 +57,7 @@ import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
 import com.thoriq.flog.ui.screen.AccountScreen
 import com.thoriq.flog.ui.screen.HomeScreen
+import com.thoriq.flog.ui.screen.FishScreen
 import com.thoriq.flog.ui.screen.CameraScreen
 import com.thoriq.flog.ui.screen.MapsScreen
 import com.thoriq.flog.ui.theme.FLogTheme
@@ -155,7 +156,7 @@ class MainActivity : ComponentActivity() {
                                     HomeScreen()
                                 }
                                 composable(fishesTab.title) {
-                                    Text(fishesTab.title)
+                                    FishScreen()
 //                                TODO\("Tambahin Alert\(\)")
                                 }
                                 composable(cameraTab.title) {
