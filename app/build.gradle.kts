@@ -77,6 +77,8 @@ dependencies {
     implementation("com.google.maps.android:maps-compose-utils:4.3.3")
 //    Maps SDK Widgets
     implementation("com.google.maps.android:maps-compose-widgets:4.3.3")
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation("com.google.code.gson:gson:2.8.9")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

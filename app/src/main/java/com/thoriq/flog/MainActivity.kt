@@ -58,6 +58,7 @@ import com.thoriq.flog.repository.WeatherRepository
 import com.thoriq.flog.ui.screen.AccountScreen
 import com.thoriq.flog.ui.screen.HomeScreen
 import com.thoriq.flog.ui.screen.CameraScreen
+import com.thoriq.flog.ui.screen.LoginScreen
 import com.thoriq.flog.ui.screen.MapsScreen
 import com.thoriq.flog.ui.theme.FLogTheme
 
@@ -69,6 +70,8 @@ data class TabBarItem(
 )
 
 class MainActivity : ComponentActivity() {
+
+
 
     private val weatherRepository = WeatherRepository(this)
 
@@ -166,12 +169,16 @@ class MainActivity : ComponentActivity() {
                                             println("Identified Image: $identifiedText")
                                         }
                                     )
+//                                    LoginScreen()
 //                                TODO\("Tambahin Camera\(\)")
                                 }
                                 composable(mapsTab.title) {
                                     MapsScreen(
                                         modifier = Modifier.padding(paddingValues),
-                                        paddingValues = PaddingValues(0.dp)
+                                        paddingValues = PaddingValues(0.dp),
+                                        latitude = WeatherRepository.latitude, // Your latitude
+                                        longitude = WeatherRepository.longitude, // Your longitude
+                                        jsonData ="[{'title':'Fish 1','snippet':'Fish 1','latitude':3.585,'longitude':98.6656},{'title':'Fish 2','snippet':'Fish 2','latitude':3.5839,'longitude':98.67}]"
                                     )
                                 }
                                 composable(accountTab.title) {
