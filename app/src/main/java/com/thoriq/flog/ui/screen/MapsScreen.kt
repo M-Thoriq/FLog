@@ -45,8 +45,7 @@ fun MapsScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     latitude: Double,
-    longitude: Double,
-    jsonData: String
+    longitude: Double
 
 ) {
 
@@ -54,6 +53,8 @@ fun MapsScreen(
     val markerIcon = BitmapFactory.decodeResource(context.resources, R.drawable.ikan2)
     val iconIkan = Bitmap.createScaledBitmap(markerIcon, 120, 120, false)
     var isMapLoaded by remember { mutableStateOf(false) }
+
+    val jsonData ="[{'title':'Fish 1','snippet':'Fish 1','latitude':3.585,'longitude':98.6656},{'title':'Fish 2','snippet':'Fish 2','latitude':3.5839,'longitude':98.67}]"
 
 
     val locationList: List<FishLocation> = remember {

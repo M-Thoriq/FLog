@@ -177,8 +177,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier.padding(paddingValues),
                                         paddingValues = PaddingValues(0.dp),
                                         latitude = WeatherRepository.latitude, // Your latitude
-                                        longitude = WeatherRepository.longitude, // Your longitude
-                                        jsonData ="[{'title':'Fish 1','snippet':'Fish 1','latitude':3.585,'longitude':98.6656},{'title':'Fish 2','snippet':'Fish 2','latitude':3.5839,'longitude':98.67}]"
+                                        longitude = WeatherRepository.longitude // Your longitude
                                     )
                                 }
                                 composable(accountTab.title) {
