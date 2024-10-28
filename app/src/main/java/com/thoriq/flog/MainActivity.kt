@@ -165,7 +165,6 @@ class MainActivity : ComponentActivity() {
                                     CameraScreen(
                                         question = "What is this fish?",
                                         onImageIdentified = { identifiedText ->
-                                            // Handle the identified text
                                             println("Identified Image: $identifiedText")
                                         }
                                     )
