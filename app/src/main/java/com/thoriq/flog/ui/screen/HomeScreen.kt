@@ -45,7 +45,7 @@ import com.thoriq.flog.CustomItem
 import com.thoriq.flog.R
 import com.thoriq.flog.data.Weatheribra
 import com.thoriq.flog.repository.Weatheribrabesar
-import com.thoriq.flog.ui.theme.BlueF
+//import com.thoriq.flog.ui.theme.BlueFlog
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 
