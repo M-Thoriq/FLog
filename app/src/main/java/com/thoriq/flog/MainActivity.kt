@@ -14,18 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,6 +65,8 @@ data class TabBarItem(
 )
 
 class MainActivity : ComponentActivity() {
+
+
 
     private val weatherRepository = WeatherRepository(this)
 
@@ -162,16 +160,18 @@ class MainActivity : ComponentActivity() {
                                     CameraScreen(
                                         question = "What is this fish?",
                                         onImageIdentified = { identifiedText ->
-                                            // Handle the identified text
                                             println("Identified Image: $identifiedText")
                                         }
                                     )
+//                                    LoginScreen()
 //                                TODO\("Tambahin Camera\(\)")
                                 }
                                 composable(mapsTab.title) {
                                     MapsScreen(
                                         modifier = Modifier.padding(paddingValues),
-                                        paddingValues = PaddingValues(0.dp)
+                                        paddingValues = PaddingValues(0.dp),
+                                        latitude = WeatherRepository.latitude, // Your latitude
+                                        longitude = WeatherRepository.longitude // Your longitude
                                     )
                                 }
                                 composable(accountTab.title) {
