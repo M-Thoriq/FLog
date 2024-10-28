@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FLog.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#3AA2DC</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_flog</item>
+        <item name="postSplashScreenTheme">@style/Theme.FLog</item>
+    </style>
+</resources>

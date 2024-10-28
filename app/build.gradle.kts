@@ -85,10 +85,16 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 //    LiveData
     implementation(libs.androidx.lifecycle.livedata.ktx)
+//    ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+//    Coroutine
     implementation(libs.androidx.lifecycle.runtime.ktx)
+//    Firebase
     implementation(libs.firebase.crashlytics.buildtools)
-    implementation("com.google.code.gson:gson:2.8.9")
+//    Gson
+    implementation(libs.gson)
+//    Splash Screen
+    implementation(libs.androidx.core.splashscreen)
 
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)

@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -61,6 +62,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -78,7 +80,8 @@ import com.thoriq.flog.ui.screen.HomeScreen
 import com.thoriq.flog.ui.screen.CameraScreen
 import com.thoriq.flog.ui.screen.FishScreen
 import com.thoriq.flog.ui.screen.MapsScreen
-import com.thoriq.flog.ui.theme.FLogTheme
+import com.thoriq.flog.ui.theme.FlogTheme
+
 import com.thoriq.flog.viewModel.FishViewModel
 import com.thoriq.flog.viewModel.factory.ViewModelFactory
 
@@ -98,6 +101,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
             var hasLocationPermission by remember { mutableStateOf(false) }
@@ -167,47 +171,49 @@ class MainActivity : ComponentActivity() {
                 )
 
             if (isSheetOpen) {
-                ModalBottomSheet(
-                    sheetState = sheetState, onDismissRequest = { isSheetOpen = false }
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                FlogTheme {
+                    ModalBottomSheet(
+                        sheetState = sheetState, onDismissRequest = { isSheetOpen = false }
                     ) {
-                        Text(text = "Add Fish", style = MaterialTheme.typography.bodyMedium)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            Text(text = "Add Fish", style = MaterialTheme.typography.bodyMedium)
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        // Add EditText for fish name
-                        var text by remember { mutableStateOf(TextFieldValue("")) }
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = text,
-                            onValueChange = {
-                                text = it
-                            },
-                            label = { Text(text = "Your Label") },
-                            placeholder = { Text(text = "Your Placeholder/Hint") },
-                        )
-                        Button(onClick = {
-                            val fish = Fish(
-                                nama = text.text,
-                                berat = 2.5, // Replace with actual value
-                                harga = 20000.0, // Replace with actual value
-                                createdAt = ""
+                            // Add EditText for fish name
+                            var text by remember { mutableStateOf(TextFieldValue("")) }
+                            TextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = text,
+                                onValueChange = {
+                                    text = it
+                                },
+                                label = { Text(text = "Your Label") },
+                                placeholder = { Text(text = "Your Placeholder/Hint") },
                             )
-                            fishViewModel.insertFish(fish)
-                            isSheetOpen = false
-                        }) {
-                            Text("Add Fish")
+                            Button(onClick = {
+                                val fish = Fish(
+                                    nama = text.text,
+                                    berat = 2.5, // Replace with actual value
+                                    harga = 20000.0, // Replace with actual value
+                                    createdAt = ""
+                                )
+                                fishViewModel.insertFish(fish)
+                                isSheetOpen = false
+                            }) {
+                                Text("Add Fish")
+                            }
                         }
                     }
                 }
             }
 
             if (hasLocationPermission) {
-                FLogTheme {
+                FlogTheme {
                     // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
@@ -312,7 +318,9 @@ fun TabView(
         }
     }
 
-    NavigationBar {
+    NavigationBar(
+
+    ) {
         tabBarItems.forEachIndexed { index, tabBarItem ->
             NavigationBarItem(
                 selected = selectedTabIndex == index,
@@ -389,7 +397,7 @@ fun MoreView() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    FLogTheme {
+    FlogTheme {
         HomeScreen()
     }
 }
