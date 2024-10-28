@@ -30,8 +30,8 @@ import kotlin.coroutines.resume
 class WeatherRepository(private var context: Context) {
 
     companion object  {
-        private var latitude: Double = 0.0
-        private var longitude: Double = 0.0
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
         var mLocation: Location? = null
     }
 
