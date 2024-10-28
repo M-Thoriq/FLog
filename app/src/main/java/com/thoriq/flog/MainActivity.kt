@@ -14,18 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,7 +54,6 @@ import com.thoriq.flog.repository.WeatherRepository
 import com.thoriq.flog.ui.screen.AccountScreen
 import com.thoriq.flog.ui.screen.HomeScreen
 import com.thoriq.flog.ui.screen.CameraScreen
-import com.thoriq.flog.ui.screen.LoginScreen
 import com.thoriq.flog.ui.screen.MapsScreen
 import com.thoriq.flog.ui.theme.FLogTheme
 
