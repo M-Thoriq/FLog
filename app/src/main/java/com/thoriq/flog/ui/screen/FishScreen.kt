@@ -70,7 +70,7 @@ fun FishScreen(
 
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -84,11 +84,11 @@ fun FishScreen(
         )
 
         LazyColumn(
-//            verticalArrangement = Arrangement.spacedBy(1.dp),
+            verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
             items(fishes) { fish ->
                 Card(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -149,7 +149,7 @@ fun FishScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Edit,
-                                    contentDescription = "Delete",
+                                    contentDescription = "Edit",
                                     tint = Color.Red
                                 )
                             }

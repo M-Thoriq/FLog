@@ -10,7 +10,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,43 +33,232 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoriq.flog.R
 
 @Composable
 fun AccountScreen(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        IconButton(
-            onClick = { /* Handle settings click */ },
-            modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 32.dp)
+            .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 16.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.akun),
-                contentDescription = "Settings",
-                tint = Color.Black
-            )
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth().padding(top = 64.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.akun),
-                contentDescription = "Profile Picture",
+            Column(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-            )
-            Text(
-                text = "Your Name",
-                fontSize = 24.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(top = 16.dp)
-            )
+                    .padding(16.dp)
+                    .weight(7f)
+            ) {
+                Image(
+                    painterResource(R.drawable.pngtree_clown_fish_marine_fish_decoration_png_image_4278349),
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+            }
+            Column(
+                Modifier.weight(10f)
+            ) {
+                Row {
+                    Text(
+                        "Harry Potter",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
+                }
+                Row {
+                    Text(
+                        "hepot160903@gmail.com",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+
+        }
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Row(
+            modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "Favorite",
+                        tint = Color.Red,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Column(
+                    Modifier.weight(5f)
+                ) {
+                    Text(
+                        "Favorite",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "More",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Favorite",
+                        tint = Color.Yellow,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Column(
+                    Modifier.weight(5f)
+                ) {
+                    Text(
+                        "Notifications",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "More",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                HorizontalDivider()
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Favorite",
+                        tint = Color.Yellow,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Column(
+                    Modifier.weight(5f)
+                ) {
+                    Text(
+                        "Statistic",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "More",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Favorite",
+                        tint = Color.Black,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Column(
+                    Modifier.weight(5f)
+                ) {
+                    Text(
+                        "Settings",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "More",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 48.dp)
+            ) {
+                HorizontalDivider()
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                        contentDescription = "Favorite",
+                        tint = Color.Red,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Column(
+                    Modifier.weight(6f)
+                ) {
+                    Text(
+                        "Log Out",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+            }
         }
     }
 }
