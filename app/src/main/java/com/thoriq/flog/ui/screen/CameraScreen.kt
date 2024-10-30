@@ -42,8 +42,12 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -124,8 +128,10 @@ fun CameraScreen(
                     model = uri,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(4.dp)
-                        .requiredSize(300.dp)
+                        .fillMaxWidth()
+                        .aspectRatio(1f)// Adjust as desired for the cropping ratio
+                        .padding(4.dp),
+                    contentScale = ContentScale.Crop // Crops image if the height exceeds the aspect ratio
                 )
             }
         } else {
@@ -159,6 +165,7 @@ fun CameraScreen(
                     shape = MaterialTheme.shapes.large,
                     colors = CardDefaults.cardColors(containerColor = Color(0XFFFFFFFF))
                 ) {
+
                     Column(
                         modifier = Modifier
                             .padding(all = 16.dp)
