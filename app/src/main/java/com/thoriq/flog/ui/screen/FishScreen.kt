@@ -62,12 +62,16 @@ fun FishScreen(
 ) {
 
 
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(paddingValues) // Apply inner padding
             .padding(16.dp)
     ) {
+        Text(
+            text = "Fish History",
+        )
         LazyColumn {
             items(fishes) { fish ->
                 Card(
