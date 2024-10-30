@@ -143,6 +143,7 @@ class MainActivity : ComponentActivity() {
             val cameraTab = TabBarItem(
                 title = "Camera",
                 selectedIcon = Icons.Filled.Notifications,
+
                 unselectedIcon = Icons.Outlined.Notifications
             )
             val mapsTab = TabBarItem(

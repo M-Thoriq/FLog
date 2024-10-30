@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -207,8 +208,7 @@ private fun moveToLocation(location: FishLocation, cameraPositionState: CameraPo
 
 
 
-//@Preview
-//@Composable
-//private fun MapsPrev() {
-//    MapsScreen(paddingValues = PaddingValues(0.dp))
-//}
+@Preview
+@Composable
+private fun MapsPrev() {
+}
