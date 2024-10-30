@@ -194,7 +194,7 @@ fun CameraScreen(
                         .padding(vertical = 16.dp)
                         .fillMaxWidth(),
                     shape = MaterialTheme.shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = Color(0XFFFFE28C))
+                    colors = CardDefaults.cardColors(containerColor = Color(0XFF000000))
                 ) {
                     Text(
                         text = (imageInterpretationUiState as ImageInterpretationUiState.Error).errorMessage,
