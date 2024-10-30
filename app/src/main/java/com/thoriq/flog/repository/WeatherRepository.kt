@@ -47,6 +47,7 @@ class WeatherRepository(private var context: Context) {
             val weatherObject = JSONObject().apply {
                 put("time", weather.Time)
                 put("temp", weather.Temp)
+                put("weather_code", weather.weatherCode)
             }
             jsonArray.put(weatherObject)
         }
@@ -96,7 +97,8 @@ class WeatherRepository(private var context: Context) {
             val jsonObject = jsonArray.getJSONObject(i)
             val time = jsonObject.getString("time")
             val temp = jsonObject.getString("temp")
-            weatherList.add(Weather(time, temp))
+            val wCode = jsonObject.getString("weather_code")
+            weatherList.add(Weather(time, temp, wCode))
         }
         return weatherList
     }
@@ -108,7 +110,7 @@ class WeatherRepository(private var context: Context) {
             if (STATE.isOnline(context)) {
                 val client = AsyncHttpClient()
                 val url =
-                    "https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&hourly=temperature_2m&forecast_days=3"
+                    "https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&hourly=temperature_2m,weather_code&forecast_days=3"
 
                 withContext(Dispatchers.Main) {
                     client.get(url, object : AsyncHttpResponseHandler() {
@@ -120,12 +122,14 @@ class WeatherRepository(private var context: Context) {
 
                                 val times = hourly.getJSONArray("time")
                                 val temps = hourly.getJSONArray("temperature_2m")
+                                val wCodes = hourly.getJSONArray("weather_code")
 
                                 val weatherList = mutableListOf<Weather>()
                                 for (i in 0 until times.length()) {
                                     val time = times.getString(i)
                                     val temp = temps.getString(i)
-                                    weatherList.add(Weather(time, temp))
+                                    val wCode = wCodes.getString(i)
+                                    weatherList.add(Weather(time, temp, wCode))
                                 }
 
                                 saveWeatherData(context, weatherList)
@@ -149,5 +153,9 @@ class WeatherRepository(private var context: Context) {
                 }
             }
         }
+    }
+
+    fun getTodaysWeather(){
+
     }
 }

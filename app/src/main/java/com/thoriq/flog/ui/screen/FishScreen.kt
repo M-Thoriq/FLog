@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -58,13 +59,14 @@ fun FishScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     fishViewModel: FishViewModel,
-    fishes: List<Fish>
+    fishes: List<Fish>,
+    onSelectedFish: (Int) -> Unit
 ) {
 
 
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues) // Apply inner padding
             .padding(16.dp)
@@ -90,6 +92,9 @@ fun FishScreen(
                         Text("Fish Name: ${fish.nama}")
                         IconButton(onClick = { fishViewModel.deleteFish(fish) }) {
                             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete")
+                        }
+                        IconButton(onClick = { onSelectedFish(fish.id) }) {
+                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Update")
                         }
                     }
                 }

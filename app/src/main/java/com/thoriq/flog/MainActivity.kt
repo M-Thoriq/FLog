@@ -3,6 +3,7 @@ package com.thoriq.flog
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -50,6 +51,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -163,7 +165,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val sheetState = rememberModalBottomSheetState()
             var isSheetOpen by remember { mutableStateOf(false) }
-
+            var selectedFish by remember { mutableIntStateOf(0) }
+            var isSheetEdited by remember { mutableStateOf(false) }
 
             fishViewModel =
                 ViewModelProvider(this, ViewModelFactory.getInstance(this.application)).get(
@@ -173,7 +176,8 @@ class MainActivity : ComponentActivity() {
             if (isSheetOpen) {
                 FlogTheme {
                     ModalBottomSheet(
-                        sheetState = sheetState, onDismissRequest = { isSheetOpen = false }
+                        sheetState = sheetState, onDismissRequest = { isSheetOpen = false
+                            isSheetEdited = false },
                     ) {
                         Column(
                             modifier = Modifier
@@ -185,7 +189,21 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.height(16.dp))
 
                             // Add EditText for fish name
+
+                            val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
+                                initial = Fish(
+                                    nama = "",
+                                    berat = 0.0,
+                                    harga = 0.0,
+                                    createdAt = ""
+                                )
+                            )
                             var text by remember { mutableStateOf(TextFieldValue("")) }
+                            LaunchedEffect(fishEdit){
+                                if (isSheetEdited) {
+                                    text = TextFieldValue(fishEdit.nama!!)
+                                }
+                            }
                             TextField(
                                 modifier = Modifier.fillMaxWidth(),
                                 value = text,
@@ -195,6 +213,7 @@ class MainActivity : ComponentActivity() {
                                 label = { Text(text = "Your Label") },
                                 placeholder = { Text(text = "Your Placeholder/Hint") },
                             )
+
                             Button(onClick = {
                                 val fish = Fish(
                                     nama = text.text,
@@ -202,10 +221,15 @@ class MainActivity : ComponentActivity() {
                                     harga = 20000.0, // Replace with actual value
                                     createdAt = ""
                                 )
-                                fishViewModel.insertFish(fish)
+                                if (isSheetEdited){
+                                    Log.d("UPDATE", "onCreate: $fish")
+                                    fishViewModel.updateFish(fish, fishEdit.id)
+                                }
+                                else {fishViewModel.insertFish(fish)}
                                 isSheetOpen = false
+                                isSheetEdited = false
                             }) {
-                                Text("Add Fish")
+                                Text(if(isSheetEdited){ "Update Fish" } else { "Add Fish" })
                             }
                         }
                     }
@@ -258,7 +282,12 @@ class MainActivity : ComponentActivity() {
                                         paddingValues = PaddingValues(0.dp),
                                         fishes = fishes,
                                         fishViewModel = fishViewModel
-                                    )
+                                    ){
+                                        isSheetOpen = true
+                                        selectedFish = it
+                                        isSheetEdited = true
+
+                                    }
                                 }
                                 composable(cameraTab.title) {
                                     CameraScreen(

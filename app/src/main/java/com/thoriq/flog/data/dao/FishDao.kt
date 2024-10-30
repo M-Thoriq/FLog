@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.thoriq.flog.data.Fish
 import kotlinx.coroutines.flow.Flow
 
@@ -24,4 +25,6 @@ interface FishDao {
     @Query("SELECT * FROM fishes")
     fun getAllFish(): Flow<List<Fish>>
 
+    @Query("SELECT * FROM fishes WHERE id = :id")
+    fun getFishById(id: Int): Flow<Fish>
 }
