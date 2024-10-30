@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import com.loopj.android.http.AsyncHttpClient.log
 import com.thoriq.flog.config.ImageInterpretationUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,12 +32,12 @@ class ImageInterpretationViewModel(
     ) {
         _uiState.value = ImageInterpretationUiState.Loading
         val prompt = """
+            
         Analyze the provided image(s) and answer the following question: '$userInput'. 
         Please return the data in JSON format with the following fields:
         
         - name: A descriptive name for the identified object or concept.
         - short_description: A brief summary of the identified object or concept.
-        - accuracy: An estimated accuracy percentage for the identification.
         
         Make sure the JSON structure is clean and easy to parse. Here is the expected output format:
         
@@ -51,6 +52,7 @@ class ImageInterpretationViewModel(
             "name": "Not a fish",
             "short_description": "The provided image(s) do not contain a fish."
         }
+        
     """
 
 
@@ -80,8 +82,12 @@ class ImageInterpretationViewModel(
     }
     private fun parseJsonAndAssignVariables(outputContent: String) {
         try {
+            val cleanedJson = outputContent
+                .replace("```json", "")  // Remove ```json if present
+                .replace("```", "")      // Remove trailing ```
+                .trim()
             // Parse the JSON response
-            val jsonObject = JSONObject(outputContent)
+            val jsonObject = JSONObject(cleanedJson)
 
             // Extract the name and short_description from the JSON
             fish = jsonObject.optString("name", "Unknown")
@@ -93,6 +99,10 @@ class ImageInterpretationViewModel(
         } catch (e: Exception) {
             // Handle any parsing errors
             _uiState.value = ImageInterpretationUiState.Error("Failed to parse JSON: ${e.localizedMessage}")
+            println(_uiState.value)
+
         }
     }
+
+
 }
