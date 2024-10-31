@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -274,8 +275,7 @@ private fun moveToLocation(location: FishLocation, cameraPositionState: CameraPo
 
 
 
-//@Preview
-//@Composable
-//private fun MapsPrev() {
-//    MapsScreen(paddingValues = PaddingValues(0.dp))
-//}
+@Preview
+@Composable
+private fun MapsPrev() {
+}
