@@ -97,7 +97,7 @@ class WeatherRepository(private var context: Context) {
             val jsonObject = jsonArray.getJSONObject(i)
             val time = jsonObject.getString("time")
             val temp = jsonObject.getString("temp")
-            val wCode = jsonObject.getString("weather_code")
+            val wCode = jsonObject.getInt("weather_code")
             weatherList.add(Weather(time, temp, wCode))
         }
         return weatherList
@@ -128,7 +128,7 @@ class WeatherRepository(private var context: Context) {
                                 for (i in 0 until times.length()) {
                                     val time = times.getString(i)
                                     val temp = temps.getString(i)
-                                    val wCode = wCodes.getString(i)
+                                    val wCode = wCodes.getInt(i)
                                     weatherList.add(Weather(time, temp, wCode))
                                 }
 

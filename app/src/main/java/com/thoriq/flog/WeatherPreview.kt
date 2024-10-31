@@ -16,29 +16,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.thoriq.flog.data.Weather
 import com.thoriq.flog.data.WeatherPreview
 
-@Composable
-fun WeatherPreviewItem(weatherPreview: WeatherPreview) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = weatherPreview.time,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
-            modifier = Modifier.padding(bottom = 4.dp),
-        )
-        Icon(painter = painterResource(id = weatherPreview.image), contentDescription = "",
-            modifier = Modifier
-                .size(42.dp)
-                .clip(CircleShape)
-        )
-        Text(text = weatherPreview.temperature,
-            style = MaterialTheme.typography.labelLarge,
-        )
-
-    }
-}
+//@Composable
+//fun WeatherPreviewItem(weatherPreview: Weather) {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth(),
+//        verticalArrangement = Arrangement.SpaceBetween,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text(text = weatherPreview.Time,
+//            style = MaterialTheme.typography.bodyMedium,
+//            color = Color.Gray,
+//            modifier = Modifier.padding(bottom = 4.dp),
+//        )
+//        Icon(painter = painterResource(id = weatherPreview.image), contentDescription = "",
+//            modifier = Modifier
+//                .size(42.dp)
+//                .clip(CircleShape)
+//        )
+//        Text(text = weatherPreview.Temp,
+//            style = MaterialTheme.typography.labelLarge,
+//        )
+//
+//    }
+//}
