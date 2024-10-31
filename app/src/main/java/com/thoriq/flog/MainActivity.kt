@@ -98,6 +98,7 @@ class MainActivity : ComponentActivity() {
 
     private val weatherRepository = WeatherRepository(this)
     private var currentScreen by mutableStateOf("Home")
+    val fishdata= "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
     private lateinit var fishViewModel: FishViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -303,8 +304,10 @@ class MainActivity : ComponentActivity() {
                                     MapsScreen(
                                         modifier = Modifier.padding(paddingValues),
                                         paddingValues = PaddingValues(0.dp),
-                                        latitude = WeatherRepository.latitude, // Your latitude
-                                        longitude = WeatherRepository.longitude // Your longitude
+                                        latitude = WeatherRepository.latitude,
+                                        longitude = WeatherRepository.longitude,
+                                        jsonData = fishdata
+
                                     )
                                 }
                                 composable(accountTab.title) {
