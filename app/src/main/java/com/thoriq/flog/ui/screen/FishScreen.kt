@@ -148,11 +148,13 @@ fun FishScreen(
                             Row(
 
                             ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Edit,
-                                    contentDescription = "Edit",
-                                    tint = Color.Red
-                                )
+                                IconButton(onClick = { onSelectedFish(fish.id) }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = "Update",
+                                        tint = Color.Red
+                                    )
+                                }
                             }
                             Row(
 
@@ -167,9 +169,7 @@ fun FishScreen(
                             }
 
                         }
-                        IconButton(onClick = { onSelectedFish(fish.id) }) {
-                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Update")
-                        }
+
                     }
                 }
             }
