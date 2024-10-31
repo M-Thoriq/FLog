@@ -65,7 +65,8 @@ fun FishScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     fishViewModel: FishViewModel,
-    fishes: List<Fish>
+    fishes: List<Fish>,
+    onSelectedFish: (Int) -> Unit
 ) {
 
 
@@ -166,7 +167,9 @@ fun FishScreen(
                             }
 
                         }
-
+                        IconButton(onClick = { onSelectedFish(fish.id) }) {
+                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Update")
+                        }
                     }
                 }
             }

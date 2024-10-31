@@ -12,15 +12,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,8 +42,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -53,13 +66,15 @@ import com.thoriq.flog.data.FishLocation
 
 
 
+
 // Update MapsScreen to accept a Modifier parameter
 @Composable
 fun MapsScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    jsonData: String
 
 ) {
 
@@ -67,8 +82,6 @@ fun MapsScreen(
     val markerIcon = BitmapFactory.decodeResource(context.resources, R.drawable.ikan2)
     val iconIkan = Bitmap.createScaledBitmap(markerIcon, 120, 120, false)
     var isMapLoaded by remember { mutableStateOf(false) }
-
-    val jsonData ="[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
 
 
     val locationList: List<FishLocation> = remember {
@@ -118,43 +131,76 @@ fun MapsScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(16.dp)
-                    .background(Color.White, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 // Search Bar Row
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    var previousText by remember { mutableStateOf("") }
+
                     TextField(
                         value = searchQuery,
-                        onValueChange = { searchQuery = it },
+                        onValueChange = { newText ->
+                            // Check if Enter key (newline) was pressed
+                            if (newText.endsWith("\n")) {
+                                // Trigger the same action as the Search Button
+                                matchingLocations = locationList.filter {
+                                    it.title.contains(searchQuery.trim(), ignoreCase = true)
+                                }
+                                currentIndex = 0 // Start with the first result if matches are found
+
+                                // Move camera to the first matching location if any
+                                if (matchingLocations.isNotEmpty()) {
+                                    moveToLocation(matchingLocations[currentIndex], cameraPositionState)
+                                }
+
+                                // Update searchQuery without newline
+                                searchQuery = newText.trim()
+                            } else {
+                                // Update normally if no newline
+                                searchQuery = newText
+                            }
+
+                            // Store current text for the next comparison
+                            previousText = newText
+                        },
                         placeholder = { Text("toriiq cobak ketik salmon") },
                         modifier = Modifier
                             .weight(1f)
-                            .padding(end = 8.dp)
+                            .padding(end = 0.dp),
                     )
 
                     // Search Button
-                    Button(onClick = {
-                        // Filter locations matching the search query
-                        matchingLocations = locationList.filter {
-                            it.title.contains(searchQuery, ignoreCase = true)
-                        }
-                        currentIndex = 0 // Start with the first result if matches are found
+                    Button(
+                        onClick = {
+                            // Filter locations matching the search query
+                            matchingLocations = locationList.filter {
+                                it.title.contains(searchQuery, ignoreCase = true)
+                            }
+                            currentIndex = 0 // Start with the first result if matches are found
 
-                        // Move camera to the first matching location if any
-                        if (matchingLocations.isNotEmpty()) {
-                            moveToLocation(matchingLocations[currentIndex], cameraPositionState)
-                        }
-                    }) {
-                        Text("Search")
+                            // Move camera to the first matching location if any
+                            if (matchingLocations.isNotEmpty()) {
+                                moveToLocation(matchingLocations[currentIndex], cameraPositionState)
+                            }
+                        },
+                        modifier = Modifier
+                            .heightIn(min = 56.dp) // Set a min height to match the TextField's height
+                            .padding(start = 0.dp), // Add padding between the TextField and Button
+                        shape = RectangleShape, // Remove corner rounding
+                        contentPadding = PaddingValues(horizontal = 16.dp) // Adjust padding as needed
+                    ) {
+                        Icon(Icons.Default.Search, contentDescription = "Search Icon")
                     }
+
+
                 }
                 if (matchingLocations.size > 1) {
                     Spacer(modifier = Modifier.height(8.dp)) // Space between search bar and navigation buttons
 
                     Row(
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Button(onClick = {
@@ -162,20 +208,41 @@ fun MapsScreen(
                             currentIndex =
                                 if (currentIndex > 0) currentIndex - 1 else matchingLocations.size - 1
                             moveToLocation(matchingLocations[currentIndex], cameraPositionState)
-                        }) {
-                            Text("<-")
+                        },
+                            modifier = Modifier,
+                            shape = RectangleShape
+
+                        ) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Search Icon")
+
                         }
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Divider(
+                            color = Color.Gray,
+                            modifier = Modifier
+                                .fillMaxHeight() // Match button height
+                                .width(1.dp)
+                                .padding(horizontal = 8.dp) // Optional padding around the divider
+                        )
 
                         Button(onClick = {
                             // Move to the next marker
                             currentIndex = (currentIndex + 1) % matchingLocations.size
                             moveToLocation(matchingLocations[currentIndex], cameraPositionState)
-                        }) {
-                            Text("->")
+                        },
+                            modifier = Modifier,
+                            shape = RectangleShape
+
+                        ) {
+                            Icon(Icons.Default.ArrowForward, contentDescription = "Search Icon")
+
                         }
                     }
+
+
+
+
+
                 }
             }
         }

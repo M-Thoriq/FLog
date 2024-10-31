@@ -1,6 +1,7 @@
 package com.thoriq.flog.repository
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.thoriq.flog.config.FishDatabase
 import com.thoriq.flog.data.Fish
@@ -24,6 +25,8 @@ class FishRepository(application: Application) {
 
     fun readAllData() : Flow<List<Fish>> = mFishDao.getAllFish()
 
+    fun getFishById(id: Int): Flow<Fish> = mFishDao.getFishById(id)
+
     fun insertFish(fish: Fish) {
         CoroutineScope(Dispatchers.IO).launch {
             mFishDao.insertFish(fish)
@@ -32,6 +35,7 @@ class FishRepository(application: Application) {
 
     fun updateFish(fish: Fish) {
         CoroutineScope(Dispatchers.IO).launch {
+            Log.d("UPDATE", "repository: $fish")
             mFishDao.updateFish(fish)
         }
     }

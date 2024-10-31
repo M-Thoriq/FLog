@@ -3,6 +3,7 @@ package com.thoriq.flog
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -50,6 +51,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -96,6 +98,7 @@ class MainActivity : ComponentActivity() {
 
     private val weatherRepository = WeatherRepository(this)
     private var currentScreen by mutableStateOf("Home")
+    val fishdata= "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
     private lateinit var fishViewModel: FishViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -164,7 +167,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val sheetState = rememberModalBottomSheetState()
             var isSheetOpen by remember { mutableStateOf(false) }
-
+            var selectedFish by remember { mutableIntStateOf(0) }
+            var isSheetEdited by remember { mutableStateOf(false) }
 
             fishViewModel =
                 ViewModelProvider(this, ViewModelFactory.getInstance(this.application)).get(
@@ -174,7 +178,8 @@ class MainActivity : ComponentActivity() {
             if (isSheetOpen) {
                 FlogTheme {
                     ModalBottomSheet(
-                        sheetState = sheetState, onDismissRequest = { isSheetOpen = false }
+                        sheetState = sheetState, onDismissRequest = { isSheetOpen = false
+                            isSheetEdited = false },
                     ) {
                         Column(
                             modifier = Modifier
@@ -186,7 +191,21 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.height(16.dp))
 
                             // Add EditText for fish name
+
+                            val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
+                                initial = Fish(
+                                    nama = "",
+                                    berat = 0.0,
+                                    harga = 0.0,
+                                    createdAt = ""
+                                )
+                            )
                             var text by remember { mutableStateOf(TextFieldValue("")) }
+                            LaunchedEffect(fishEdit){
+                                if (isSheetEdited) {
+                                    text = TextFieldValue(fishEdit.nama!!)
+                                }
+                            }
                             TextField(
                                 modifier = Modifier.fillMaxWidth(),
                                 value = text,
@@ -196,6 +215,7 @@ class MainActivity : ComponentActivity() {
                                 label = { Text(text = "Your Label") },
                                 placeholder = { Text(text = "Your Placeholder/Hint") },
                             )
+
                             Button(onClick = {
                                 val fish = Fish(
                                     nama = text.text,
@@ -203,10 +223,15 @@ class MainActivity : ComponentActivity() {
                                     harga = 20000.0, // Replace with actual value
                                     createdAt = ""
                                 )
-                                fishViewModel.insertFish(fish)
+                                if (isSheetEdited){
+                                    Log.d("UPDATE", "onCreate: $fish")
+                                    fishViewModel.updateFish(fish, fishEdit.id)
+                                }
+                                else {fishViewModel.insertFish(fish)}
                                 isSheetOpen = false
+                                isSheetEdited = false
                             }) {
-                                Text("Add Fish")
+                                Text(if(isSheetEdited){ "Update Fish" } else { "Add Fish" })
                             }
                         }
                     }
@@ -259,7 +284,12 @@ class MainActivity : ComponentActivity() {
                                         paddingValues = PaddingValues(0.dp),
                                         fishes = fishes,
                                         fishViewModel = fishViewModel
-                                    )
+                                    ){
+                                        isSheetOpen = true
+                                        selectedFish = it
+                                        isSheetEdited = true
+
+                                    }
                                 }
                                 composable(cameraTab.title) {
                                     CameraScreen(
@@ -275,8 +305,10 @@ class MainActivity : ComponentActivity() {
                                     MapsScreen(
                                         modifier = Modifier.padding(paddingValues),
                                         paddingValues = PaddingValues(0.dp),
-                                        latitude = WeatherRepository.latitude, // Your latitude
-                                        longitude = WeatherRepository.longitude // Your longitude
+                                        latitude = WeatherRepository.latitude,
+                                        longitude = WeatherRepository.longitude,
+                                        jsonData = fishdata
+
                                     )
                                 }
                                 composable(accountTab.title) {
