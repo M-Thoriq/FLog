@@ -134,8 +134,6 @@ fun HomeScreen(
 
 private fun getNowWeather(weathers: List<Weather>): Weather? {
     val currentHour = getLocalHour()
-    weathers.forEach {
-    }
     return weathers.find { getHourFromTimeString(it.Time) == currentHour }
 }
 
