@@ -120,17 +120,12 @@ fun HomeScreen(
                 weatherList = weathers.value
             )
         } else {
-            androidx.compose.animation.AnimatedVisibility(
-                modifier = Modifier.fillMaxWidth(),
-                visible = !isWeatherLoading,
-                enter = EnterTransition.None,
-                exit = fadeOut()
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .wrapContentSize()
-                )
+                CircularProgressIndicator()
             }
         }
         RecentCatch()
