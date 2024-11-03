@@ -71,7 +71,6 @@ import com.thoriq.flog.data.FishLocation
 @Composable
 fun MapsScreen(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues,
     latitude: Double,
     longitude: Double,
     jsonData: String
@@ -99,7 +98,6 @@ fun MapsScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
     ) {
         // Add GoogleMap here
         Box(modifier = Modifier.fillMaxSize()) {

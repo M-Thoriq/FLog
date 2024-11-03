@@ -74,7 +74,6 @@ class WeatherRepository(private var context: Context) {
                     if (location != null) {
                         latitude = location.latitude
                         longitude = location.longitude
-                        Log.d("GMS", "getLastLocation: ${location.latitude} and ${location.longitude}")
                     } else {
                         latitude = 3.58333
                         longitude = 98.66667
@@ -106,7 +105,6 @@ class WeatherRepository(private var context: Context) {
     fun fetchWeatherData(context: Context, onWeatherFetched: (List<Weather>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             getLatandLong()
-            Log.d("GMS", "fetchWeatherData: $latitude - $longitude")
             if (STATE.isOnline(context)) {
                 val client = AsyncHttpClient()
                 val url =
@@ -135,7 +133,6 @@ class WeatherRepository(private var context: Context) {
                                 saveWeatherData(context, weatherList)
                                 onWeatherFetched(weatherList)
                             } catch (e: Exception) {
-                                Log.d("JSON", "onSuccess: Failed to parse JSON")
                             }
                         }
 
@@ -148,8 +145,6 @@ class WeatherRepository(private var context: Context) {
                 val weatherList = loadWeatherData(context)
                 if (weatherList != null) {
                     onWeatherFetched(weatherList)
-                } else {
-                    Log.d("ERROR", "No data available offline")
                 }
             }
         }

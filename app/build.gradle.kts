@@ -95,6 +95,8 @@ dependencies {
 //    Splash Screen
     implementation(libs.androidx.core.splashscreen)
 
+    implementation(libs.androidx.material.icons.extended.android)
+
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

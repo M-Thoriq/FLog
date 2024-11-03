@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -63,113 +64,115 @@ import kotlinx.coroutines.launch
 @Composable
 fun FishScreen(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues,
     fishViewModel: FishViewModel,
     fishes: List<Fish>,
     onSelectedFish: (Int) -> Unit
 ) {
-
-
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
-        Text(
-            text = "Fish",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        )
+        if (fishes.isEmpty()) {
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(32.dp),
-        ) {
-            items(fishes) { fish ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "No fishing logs! Add one now!", style = MaterialTheme.typography.bodyMedium)
+            }
+
+        } else {
+            LazyColumn(
+//                modifier = modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(32.dp),
+            ) {
+                items(fishes) { fish ->
+                    Card(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
-                        Column(
-                            modifier = Modifier.weight(8f)
+                        Row(
+                            modifier = Modifier.padding(16.dp)
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.pngtree_clown_fish_marine_fish_decoration_png_image_4278349),
-                                contentDescription = null
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(15f)
-                                .padding(start = 8.dp)
-
-                        ) {
-                            Row {
-                                Text(
-                                    " ${fish.nama}", style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.padding(bottom = 12.dp),
-                                    fontWeight = FontWeight.Bold
+                            Column(
+                                modifier = Modifier.weight(8f)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.pngtree_clown_fish_marine_fish_decoration_png_image_4278349),
+                                    contentDescription = null
                                 )
                             }
-                            Row {
-                                Text(
-                                    "Berat: ${fish.berat} kg",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = 5.dp)
-                                )
-                            }
-                            Row {
-                                Text(
-                                    "Harga: Rp ${fish.harga}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = 5.dp)
-
-                                )
-                            }
-                            Row {
-                                Text(
-                                    " ${fish.createdAt}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(start = 2.dp)
-                                )
-                            }
-                        }
-                        Column(
-                            modifier = Modifier.weight(3f)
-                        ) {
-                            Row(
+                            Column(
+                                modifier = Modifier
+                                    .weight(15f)
+                                    .padding(start = 8.dp)
 
                             ) {
-                                IconButton(onClick = { onSelectedFish(fish.id) }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Edit,
-                                        contentDescription = "Update",
-                                        tint = Color.Red
+                                Row {
+                                    Text(
+                                        " ${fish.nama}",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier.padding(bottom = 12.dp),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                Row {
+                                    Text(
+                                        "Berat: ${fish.berat} kg",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.padding(start = 5.dp)
+                                    )
+                                }
+                                Row {
+                                    Text(
+                                        "Harga: Rp ${fish.harga}",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.padding(start = 5.dp)
+
+                                    )
+                                }
+                                Row {
+                                    Text(
+                                        " ${fish.createdAt}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color.Gray,
+                                        modifier = Modifier.padding(start = 2.dp)
                                     )
                                 }
                             }
-                            Row(
-
+                            Column(
+                                modifier = Modifier.weight(3f)
                             ) {
-                                IconButton(onClick = { fishViewModel.deleteFish(fish) }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Delete,
-                                        contentDescription = "Delete",
-                                        tint = Color.Red
-                                    )
+                                Row(
+
+                                ) {
+                                    IconButton(onClick = { onSelectedFish(fish.id) }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Edit,
+                                            contentDescription = "Update",
+                                            tint = Color.Red
+                                        )
+                                    }
                                 }
+                                Row(
+
+                                ) {
+                                    IconButton(onClick = { fishViewModel.deleteFish(fish) }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Delete,
+                                            contentDescription = "Delete",
+                                            tint = Color.Red
+                                        )
+                                    }
+                                }
+
                             }
 
                         }
-
                     }
                 }
             }

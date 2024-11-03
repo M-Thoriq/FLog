@@ -22,15 +22,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -46,6 +50,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,11 +65,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModel
@@ -98,7 +109,8 @@ class MainActivity : ComponentActivity() {
 
     private val weatherRepository = WeatherRepository(this)
     private var currentScreen by mutableStateOf("Home")
-    val fishdata= "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
+    val fishdata =
+        "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
     private lateinit var fishViewModel: FishViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -140,14 +152,13 @@ class MainActivity : ComponentActivity() {
             )
             val fishesTab = TabBarItem(
                 title = "Fishes",
-                selectedIcon = Icons.Filled.Build,
-                unselectedIcon = Icons.Outlined.Build
+                selectedIcon = Icons.Filled.Explore,
+                unselectedIcon = Icons.Outlined.Explore
             )
             val cameraTab = TabBarItem(
                 title = "Camera",
-                selectedIcon = Icons.Filled.Notifications,
-
-                unselectedIcon = Icons.Outlined.Notifications
+                selectedIcon = Icons.Filled.PhotoCamera,
+                unselectedIcon = Icons.Outlined.PhotoCamera
             )
             val mapsTab = TabBarItem(
                 title = "Maps",
@@ -169,6 +180,8 @@ class MainActivity : ComponentActivity() {
             var isSheetOpen by remember { mutableStateOf(false) }
             var selectedFish by remember { mutableIntStateOf(0) }
             var isSheetEdited by remember { mutableStateOf(false) }
+            val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+            var topBarTitle by remember { mutableStateOf("Flog")}
 
             fishViewModel =
                 ViewModelProvider(this, ViewModelFactory.getInstance(this.application)).get(
@@ -178,8 +191,11 @@ class MainActivity : ComponentActivity() {
             if (isSheetOpen) {
                 FlogTheme {
                     ModalBottomSheet(
-                        sheetState = sheetState, onDismissRequest = { isSheetOpen = false
-                            isSheetEdited = false },
+                        sheetState = sheetState,
+                        onDismissRequest = {
+                            isSheetOpen = false
+                            isSheetEdited = false
+                        },
                     ) {
                         Column(
                             modifier = Modifier
@@ -201,7 +217,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                             var text by remember { mutableStateOf(TextFieldValue("")) }
-                            LaunchedEffect(fishEdit){
+                            LaunchedEffect(fishEdit) {
                                 if (isSheetEdited) {
                                     text = TextFieldValue(fishEdit.nama!!)
                                 }
@@ -223,15 +239,21 @@ class MainActivity : ComponentActivity() {
                                     harga = 20000.0, // Replace with actual value
                                     createdAt = ""
                                 )
-                                if (isSheetEdited){
-                                    Log.d("UPDATE", "onCreate: $fish")
+                                if (isSheetEdited) {
                                     fishViewModel.updateFish(fish, fishEdit.id)
+                                } else {
+                                    fishViewModel.insertFish(fish)
                                 }
-                                else {fishViewModel.insertFish(fish)}
                                 isSheetOpen = false
                                 isSheetEdited = false
                             }) {
-                                Text(if(isSheetEdited){ "Update Fish" } else { "Add Fish" })
+                                Text(
+                                    if (isSheetEdited) {
+                                        "Update Fish"
+                                    } else {
+                                        "Add Fish"
+                                    }
+                                )
                             }
                         }
                     }
@@ -250,12 +272,14 @@ class MainActivity : ComponentActivity() {
                                 TabView(
                                     tabBarItems,
                                     navController,
-                                    currentScreen, // Pass currentScreen as parameter
-                                    { newScreen ->
-                                        currentScreen = newScreen
-                                    } // Pass update function
-                                )
-                            }, floatingActionButton = {
+                                    currentScreen
+                                ) // Pass currentScreen as parameter
+                                { newScreen ->
+                                    currentScreen = newScreen
+                                } // Pass update function
+
+                            },
+                            floatingActionButton = {
                                 if (currentScreen == fishesTab.title) {
                                     FloatingActionButton(onClick = {
                                         isSheetOpen = true
@@ -267,24 +291,37 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             },
-                            floatingActionButtonPosition = FabPosition.End
+                            floatingActionButtonPosition = FabPosition.End,
+//                            topBar = {
+//                                TopAppBar(
+//                                    title = {
+//                                        Text(
+//                                            text = topBarTitle,
+//                                            fontSize = 25.sp,
+//                                        )
+//                                    },
+//                                    scrollBehavior = scrollBehavior
+//                                )
+//                            },
+//                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                         ) { paddingValues ->
                             NavHost(
+                                modifier = Modifier.padding(paddingValues),
                                 navController = navController,
                                 startDestination = homeTab.title
                             ) {
                                 composable(homeTab.title) {
+                                    topBarTitle = "Flog"
                                     HomeScreen()
                                 }
                                 composable(fishesTab.title) {
+                                    topBarTitle = "Fish"
                                     val fishes = fishViewModel.getAllFish()
                                         .collectAsState(initial = emptyList()).value
                                     FishScreen(
-                                        modifier = Modifier.padding(paddingValues),
-                                        paddingValues = PaddingValues(0.dp),
                                         fishes = fishes,
                                         fishViewModel = fishViewModel
-                                    ){
+                                    ) {
                                         isSheetOpen = true
                                         selectedFish = it
                                         isSheetEdited = true
@@ -292,6 +329,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                                 composable(cameraTab.title) {
+                                    topBarTitle = "Camera"
                                     CameraScreen(
                                         question = "What is this fish?",
                                         onImageIdentified = { identifiedText ->
@@ -302,16 +340,15 @@ class MainActivity : ComponentActivity() {
 //                                TODO\("Tambahin Camera\(\)")
                                 }
                                 composable(mapsTab.title) {
+                                    topBarTitle = "Maps"
                                     MapsScreen(
-                                        modifier = Modifier.padding(paddingValues),
-                                        paddingValues = PaddingValues(0.dp),
                                         latitude = WeatherRepository.latitude,
                                         longitude = WeatherRepository.longitude,
                                         jsonData = fishdata
-
                                     )
                                 }
                                 composable(accountTab.title) {
+                                    topBarTitle = "Account"
                                     AccountScreen()
                                 }
                             }
@@ -347,13 +384,12 @@ fun TabView(
         tabBarItems.forEachIndexed { index, item ->
             if (item.title == currentDestination?.route) {
                 selectedTabIndex = index
+
             }
         }
     }
 
-    NavigationBar(
-
-    ) {
+    NavigationBar(containerColor = Color.Blue) {
         tabBarItems.forEachIndexed { index, tabBarItem ->
             NavigationBarItem(
                 selected = selectedTabIndex == index,

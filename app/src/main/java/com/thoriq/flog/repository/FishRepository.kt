@@ -35,7 +35,6 @@ class FishRepository(application: Application) {
 
     fun updateFish(fish: Fish) {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d("UPDATE", "repository: $fish")
             mFishDao.updateFish(fish)
         }
     }

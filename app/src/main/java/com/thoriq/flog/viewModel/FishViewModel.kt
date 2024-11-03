@@ -30,7 +30,6 @@ class FishViewModel(application: Application): ViewModel() {
     }
 
     fun updateFish(fish: Fish, oldFishId: Int){
-        Log.d("UPDATE", "VIEWMODEL: $fish")
         fish.createdAt = getCurrentDate()
         fish.id = oldFishId
         mRepository.updateFish(fish)
