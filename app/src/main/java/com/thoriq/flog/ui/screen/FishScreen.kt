@@ -71,6 +71,7 @@ fun FishScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(top = 16.dp)
     ) {
         if (fishes.isEmpty()) {
 

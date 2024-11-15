@@ -41,6 +41,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.thoriq.flog.RecentCatchItem
 import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
+import com.thoriq.flog.viewModel.WeatherViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -59,19 +63,12 @@ import kotlin.time.Duration.Companion.hours
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    weatherViewModel: WeatherViewModel
 ) {
-    val weathers = remember { mutableStateOf<List<Weather>>(emptyList()) }
     val context = LocalContext.current
-    val weatherRepository = WeatherRepository(context)
-    var isWeatherLoading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(Unit) {
-        weatherRepository.fetchWeatherData(context) { weatherList ->
-            weathers.value = weatherList
-            isWeatherLoading = false
-        }
-    }
-    val nowWeathers = getNowWeather(weathers.value)
+    val nowWeathers = getNowWeather(weatherViewModel.weatherList)
+    val isLoaded : Flow<Boolean> = weatherViewModel.isLoaded
 
     Column(
         modifier = Modifier
@@ -110,14 +107,14 @@ fun HomeScreen(
             95 -> "Thunderstorm"
             else -> "Heavy Thunderstorm"
         }
-        if (!isWeatherLoading){
+        if (isLoaded.collectAsState(initial = false).value){
             WeatherCard(
                 temperature = "${nowWeathers?.Temp}°C",
                 condition = weatherCondition,
                 location = "Medan",
                 time = "${getLocalHour()} WIB",
                 icon = iconWeather,
-                weatherList = weathers.value
+                weatherList = weatherViewModel.weatherList
             )
         } else {
             Row(
@@ -193,6 +190,7 @@ fun WeatherCard(
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -220,7 +218,7 @@ fun WeatherCard(
                 Text(
                     text = condition,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+
                 )
 
             }
@@ -237,7 +235,6 @@ fun WeatherCard(
                     Text(
                         text = time,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray
                     )
                 }
             }
@@ -284,7 +281,7 @@ fun RecentCatch(
     val recentCatch = com.thoriq.flog.repository.RecentCatchRepository()
     val getAllData = recentCatch.getAllData()
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.padding(16.dp)
     ) {
         items(items = getAllData) { recentCatch ->
@@ -304,7 +301,6 @@ fun WeatherPreviewItem(weatherPreview: Weather, icon: Int) {
     ) {
         Text(text = "${getHourFromTimeString(weatherPreview.Time)}:00 WIB",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
             modifier = Modifier.padding(bottom = 4.dp),
         )
         Icon(painter = painterResource(icon), contentDescription = "",

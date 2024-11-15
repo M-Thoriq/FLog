@@ -3,40 +3,28 @@ package com.thoriq.flog
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Anchor
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.PhotoCamera
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -44,66 +32,46 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.thoriq.flog.data.BottomBarItemData
 import com.thoriq.flog.data.Fish
+import com.thoriq.flog.data.Screen
 import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
+import com.thoriq.flog.ui.component.BottomBar
 import com.thoriq.flog.ui.screen.AccountScreen
-import com.thoriq.flog.ui.screen.HomeScreen
 import com.thoriq.flog.ui.screen.CameraScreen
 import com.thoriq.flog.ui.screen.FishScreen
+import com.thoriq.flog.ui.screen.HomeScreen
 import com.thoriq.flog.ui.screen.MapsScreen
 import com.thoriq.flog.ui.theme.FlogTheme
-
 import com.thoriq.flog.viewModel.FishViewModel
+import com.thoriq.flog.viewModel.WeatherViewModel
 import com.thoriq.flog.viewModel.factory.ViewModelFactory
-
-data class TabBarItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val badgeAmount: Int? = null,
-)
 
 class MainActivity : ComponentActivity() {
 
@@ -112,6 +80,7 @@ class MainActivity : ComponentActivity() {
     val fishdata =
         "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
     private lateinit var fishViewModel: FishViewModel
+    private lateinit var weatherViewModel: WeatherViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -144,48 +113,84 @@ class MainActivity : ComponentActivity() {
                     weathers.value = weatherList
                 }
             }
-
-            val homeTab = TabBarItem(
-                title = "Home",
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home
+            val navController = rememberNavController()
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            val bottomBarItems = listOf(
+                    BottomBarItemData(
+                        iconSelected = Icons.Default.Home,
+                        iconUnselected = Icons.Outlined.Home,
+                        route = Screen.Home.route,
+                        selected = currentRoute == Screen.Home.route,
+                        onClick = {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        }
+                    ),
+                    BottomBarItemData(
+                        iconSelected = Icons.Default.Explore,
+                        iconUnselected = Icons.Outlined.Explore,
+                        route = Screen.Fishes.route,
+                        selected = currentRoute == Screen.Fishes.route,
+                        onClick = {
+                            navController.navigate(Screen.Fishes.route) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        }
+                    ),
+                    BottomBarItemData(
+                        iconSelected = Icons.Default.Home,
+                        iconUnselected = Icons.Outlined.Home,
+                        route = "",
+                        selected = false,
+                        onClick = {}
+                    ),
+                    BottomBarItemData(
+                        iconSelected = Icons.Default.Map,
+                        iconUnselected = Icons.Outlined.Map,
+                        route = Screen.Maps.route,
+                        selected = currentRoute == Screen.Maps.route,
+                        onClick = {
+                            navController.navigate(Screen.Maps.route) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        }
+                    ),
+                    BottomBarItemData(
+                        iconSelected = Icons.Default.Person,
+                        iconUnselected = Icons.Outlined.Person,
+                        route = Screen.Account.route,
+                        selected = currentRoute == Screen.Account.route,
+                        onClick = {
+                            navController.navigate(Screen.Account.route) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        }
+                    )
             )
-            val fishesTab = TabBarItem(
-                title = "Fishes",
-                selectedIcon = Icons.Filled.Explore,
-                unselectedIcon = Icons.Outlined.Explore
-            )
-            val cameraTab = TabBarItem(
-                title = "Camera",
-                selectedIcon = Icons.Filled.PhotoCamera,
-                unselectedIcon = Icons.Outlined.PhotoCamera
-            )
-            val mapsTab = TabBarItem(
-                title = "Maps",
-                selectedIcon = Icons.Filled.LocationOn,
-                unselectedIcon = Icons.Outlined.LocationOn
-            )
-            val accountTab = TabBarItem(
-                title = "Account",
-                selectedIcon = Icons.Filled.Person,
-                unselectedIcon = Icons.Outlined.Person
-            )
-
-            // creating a list of all the tabs
-            val tabBarItems = listOf(homeTab, fishesTab, cameraTab, mapsTab, accountTab)
 
             // creating our navController
-            val navController = rememberNavController()
+
             val sheetState = rememberModalBottomSheetState()
             var isSheetOpen by remember { mutableStateOf(false) }
             var selectedFish by remember { mutableIntStateOf(0) }
             var isSheetEdited by remember { mutableStateOf(false) }
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-            var topBarTitle by remember { mutableStateOf("Flog")}
+            var topBarTitle by remember { mutableStateOf("Flog") }
 
             fishViewModel =
                 ViewModelProvider(this, ViewModelFactory.getInstance(this.application)).get(
                     FishViewModel::class.java
+                )
+
+            weatherViewModel =
+                ViewModelProvider(this, ViewModelFactory.getInstance(this.application)).get(
+                    WeatherViewModel::class.java
                 )
 
             if (isSheetOpen) {
@@ -269,29 +274,30 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Scaffold(
                             bottomBar = {
-                                TabView(
-                                    tabBarItems,
-                                    navController,
-                                    currentScreen
-                                ) // Pass currentScreen as parameter
-                                { newScreen ->
-                                    currentScreen = newScreen
-                                } // Pass update function
-
-                            },
-                            floatingActionButton = {
-                                if (currentScreen == fishesTab.title) {
-                                    FloatingActionButton(onClick = {
-                                        isSheetOpen = true
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Add,
-                                            contentDescription = "Add"
-                                        )
+                                BottomBar(
+                                    buttons = bottomBarItems,
+                                    fabRoute = Screen.Camera.route,
+                                    fabOnClick = {
+                                        navController.navigate(Screen.Camera.route) {
+                                            popUpTo(navController.graph.startDestinationId)
+                                            launchSingleTop = true
+                                        }
                                     }
-                                }
+                                )
                             },
-                            floatingActionButtonPosition = FabPosition.End,
+//                            floatingActionButton = {
+//                                if (currentScreen == Screen.Camera.route) {
+//                                    FloatingActionButton(onClick = {
+//                                        isSheetOpen = true
+//                                    }) {
+//                                        Icon(
+//                                            imageVector = Icons.Filled.Add,
+//                                            contentDescription = "Add"
+//                                        )
+//                                    }
+//                                }
+//                            },
+//                            floatingActionButtonPosition = FabPosition.End,
 //                            topBar = {
 //                                TopAppBar(
 //                                    title = {
@@ -306,15 +312,15 @@ class MainActivity : ComponentActivity() {
 //                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                         ) { paddingValues ->
                             NavHost(
-                                modifier = Modifier.padding(paddingValues),
+                                modifier = Modifier.padding(bottom = 72.dp),
                                 navController = navController,
-                                startDestination = homeTab.title
+                                startDestination = Screen.Home.route
                             ) {
-                                composable(homeTab.title) {
+                                composable(Screen.Home.route) {
                                     topBarTitle = "Flog"
-                                    HomeScreen()
+                                    HomeScreen(weatherViewModel = weatherViewModel)
                                 }
-                                composable(fishesTab.title) {
+                                composable(Screen.Fishes.route) {
                                     topBarTitle = "Fish"
                                     val fishes = fishViewModel.getAllFish()
                                         .collectAsState(initial = emptyList()).value
@@ -328,7 +334,7 @@ class MainActivity : ComponentActivity() {
 
                                     }
                                 }
-                                composable(cameraTab.title) {
+                                composable(Screen.Camera.route) {
                                     topBarTitle = "Camera"
                                     CameraScreen(
                                         question = "What is this fish?",
@@ -336,10 +342,8 @@ class MainActivity : ComponentActivity() {
                                             println("Identified Image: $identifiedText")
                                         }
                                     )
-//                                    LoginScreen()
-//                                TODO\("Tambahin Camera\(\)")
                                 }
-                                composable(mapsTab.title) {
+                                composable(Screen.Maps.route) {
                                     topBarTitle = "Maps"
                                     MapsScreen(
                                         latitude = WeatherRepository.latitude,
@@ -347,7 +351,7 @@ class MainActivity : ComponentActivity() {
                                         jsonData = fishdata
                                     )
                                 }
-                                composable(accountTab.title) {
+                                composable(Screen.Account.route) {
                                     topBarTitle = "Account"
                                     AccountScreen()
                                 }
@@ -368,105 +372,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun TabView(
-    tabBarItems: List<TabBarItem>,
-    navController: NavController,
-    currentScreen: String, // Receive currentScreen as parameter
-    updateCurrentScreen: (String) -> Unit // Receive update function
-) {
-    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStackEntry?.destination
-
-    // Update selectedTabIndex based on currentDestination
-    LaunchedEffect(key1 = currentDestination) {
-        tabBarItems.forEachIndexed { index, item ->
-            if (item.title == currentDestination?.route) {
-                selectedTabIndex = index
-
-            }
-        }
-    }
-
-    NavigationBar(containerColor = Color.Blue) {
-        tabBarItems.forEachIndexed { index, tabBarItem ->
-            NavigationBarItem(
-                selected = selectedTabIndex == index,
-                onClick = {
-                    selectedTabIndex = index
-                    updateCurrentScreen(tabBarItem.title)
-                    // Update currentScreen
-                    navController.navigate(tabBarItem.title) {
-                        launchSingleTop = true
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    TabBarIconView(
-                        selectedTabIndex == index,
-                        tabBarItem.selectedIcon,
-                        tabBarItem.unselectedIcon,
-                        tabBarItem.title,
-                        tabBarItem.badgeAmount
-                    )
-                },
-                label = { Text(tabBarItem.title) }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TabBarIconView(
-    isSelected: Boolean,
-    selectedIcon: ImageVector,
-    unselectedIcon: ImageVector,
-    title: String,
-    badgeAmount: Int? = null,
-) {
-    BadgedBox(badge = { TabBarBadgeView(badgeAmount) }) {
-        Icon(
-            imageVector = if (isSelected) {
-                selectedIcon
-            } else {
-                unselectedIcon
-            },
-            contentDescription = title
-        )
-    }
-}
-
-@Composable
-fun TabBarBadgeView(count: Int? = null) {
-    if (count != null) {
-        Badge {
-            Text(count.toString())
-        }
-    }
-}
-
-@Composable
-fun MoreView() {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text("Thing 1")
-        Text("Thing 2")
-        Text("Thing 3")
-        Text("Thing 4")
-        Text("Thing 5")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FlogTheme {
-        HomeScreen()
-    }
-}
