@@ -28,12 +28,15 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
@@ -61,8 +65,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.thoriq.flog.R
 import com.thoriq.flog.data.FishLocation
-
-
 
 
 
@@ -129,20 +131,21 @@ fun MapsScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(16.dp)
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 0.dp, vertical = 6.dp)
             ) {
                 // Search Bar Row
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clip(shape = RoundedCornerShape(32.dp))
                 ) {
                     var previousText by remember { mutableStateOf("") }
 
                     TextField(
                         value = searchQuery,
                         onValueChange = { newText ->
-                            // Check if Enter key (newline) was pressed
+                            // Your logic for handling text change
                             if (newText.endsWith("\n")) {
-                                // Trigger the same action as the Search Button
+                                // Same action as the Search Button
                                 matchingLocations = locationList.filter {
                                     it.title.contains(searchQuery.trim(), ignoreCase = true)
                                 }
@@ -156,18 +159,20 @@ fun MapsScreen(
                                 // Update searchQuery without newline
                                 searchQuery = newText.trim()
                             } else {
-                                // Update normally if no newline
                                 searchQuery = newText
                             }
 
-                            // Store current text for the next comparison
                             previousText = newText
                         },
                         placeholder = { Text("toriiq cobak ketik salmon") },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 0.dp),
+                        colors = TextFieldDefaults.colors(
+                            containerColor = Color.White,  // Background color for Material3 TextField
+                            textColor = Color.Black, // Text color inside the TextField
+                            focusedIndicatorColor = Color.Transparent, // Remove the focus indicator
+                            unfocusedIndicatorColor = Color.Transparent // Remove the unfocused indicator
+                        )
                     )
+
 
                     // Search Button
                     Button(
@@ -184,13 +189,17 @@ fun MapsScreen(
                             }
                         },
                         modifier = Modifier
-                            .heightIn(min = 56.dp) // Set a min height to match the TextField's height
-                            .padding(start = 0.dp), // Add padding between the TextField and Button
+                            .heightIn(min = 56.dp), // Set a min height to match the TextField's height
                         shape = RectangleShape, // Remove corner rounding
-                        contentPadding = PaddingValues(horizontal = 16.dp) // Adjust padding as needed
+                        contentPadding = PaddingValues(horizontal = 16.dp), // Adjust padding as needed
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White, // Set the button's background color
+                            contentColor = Color.Black // Set the text/icon color
+                        )
                     ) {
-                        Icon(Icons.Default.Search, contentDescription = "Search Icon")
+                        Icon(Icons.Default.Search, contentDescription = "Search Icon", tint = Color.Black) // Set icon color
                     }
+
 
 
                 }
@@ -215,7 +224,7 @@ fun MapsScreen(
 
                         }
 
-                        Divider(
+                        HorizontalDivider(
                             color = Color.Gray,
                             modifier = Modifier
                                 .fillMaxHeight() // Match button height
