@@ -3,6 +3,7 @@ package com.thoriq.flog.ui.screen
 import android.app.Application
 import android.widget.EditText
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Anchor
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
@@ -54,6 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import com.thoriq.flog.R
 import com.thoriq.flog.data.Fish
@@ -71,28 +75,54 @@ fun FishScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
+            .padding(top = 36.dp)
+            .padding(horizontal = 24.dp),
     ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 24.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Anchor,
+                contentDescription = "Anchor Icon",
+                tint = MaterialTheme.colorScheme.primary ,
+                modifier = Modifier.size(36.dp)
+            )
+            Text(text="Catch", style = MaterialTheme.typography.titleLarge, modifier = Modifier
+                .padding(start = 8.dp),
+                fontWeight = FontWeight.Bold,
+                fontSize = 36.sp
+
+            )
+        }
+
         if (fishes.isEmpty()) {
 
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
+
             ) {
                 Text(text = "No fishing logs! Add one now!", style = MaterialTheme.typography.bodyMedium)
             }
 
         } else {
             LazyColumn(
-//                modifier = modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+
+
             ) {
                 items(fishes) { fish ->
                     Card(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondary // Set the card's background color
+                                ),
+
                         shape = RoundedCornerShape(16.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
@@ -103,7 +133,7 @@ fun FishScreen(
                                 modifier = Modifier.weight(8f)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.pngtree_clown_fish_marine_fish_decoration_png_image_4278349),
+                                    painter = painterResource(id = R.drawable.ic_flog),
                                     contentDescription = null
                                 )
                             }
@@ -155,7 +185,7 @@ fun FishScreen(
                                         Icon(
                                             imageVector = Icons.Filled.Edit,
                                             contentDescription = "Update",
-                                            tint = Color.Red
+
                                         )
                                     }
                                 }
