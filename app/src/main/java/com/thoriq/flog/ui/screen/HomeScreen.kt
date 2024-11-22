@@ -46,6 +46,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import com.thoriq.flog.RecentCatchItem
 import com.thoriq.flog.data.Weather
@@ -78,20 +80,21 @@ fun HomeScreen(
         GreetingSection()
 
         val iconWeather = when (nowWeathers?.weatherCode) {
-            0 -> R.drawable.sunny
-            1, 2, 3 -> R.drawable.partly_cloudy_day
-            45, 48 -> R.drawable.foggy
-            51, 53, 55 -> R.drawable.drizzle
-            56, 57 -> R.drawable.freezing_drizzle
-            61, 63, 65 -> R.drawable.rainy
-            66, 67 -> R.drawable.freezing_rain
-            71, 73, 75 -> R.drawable.snowfall
-            77 -> R.drawable.cloudy_snowing
-            80, 81, 82 -> R.drawable.rain_showers
-            85, 86 -> R.drawable.snow_showers
-            95 -> R.drawable.thunderstorm
-            else -> R.drawable.thunderstorm_hail
+            0 -> R.drawable.filled_sunny
+            1, 2, 3 -> R.drawable.filled_mainly_clear
+            45, 48 -> R.drawable.filled_foggy
+            51, 53, 55 -> R.drawable.filled_drizzle
+            56, 57 -> R.drawable.filled_freezing_drizzle
+            61, 63, 65 -> R.drawable.filled_rainy
+            66, 67 -> R.drawable.filled_freezing_rain
+            71, 73, 75 -> R.drawable.filled_snowfall
+            77 -> R.drawable.filled_cloudy_snowing
+            80, 81, 82 -> R.drawable.filled_rain_showers
+            85, 86 -> R.drawable.filled_snow_showers
+            95 -> R.drawable.filled_thunderstorm
+            else -> R.drawable.filled_thunderstorm_hail
         }
+
         val weatherCondition = when (nowWeathers?.weatherCode) {
             0 -> "Sunny Day"
             1, 2, 3 -> "Cloudy Day"
@@ -190,71 +193,99 @@ fun WeatherCard(
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent), // Transparent to show gradient
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = location,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = condition,
-                    style = MaterialTheme.typography.bodyMedium,
-
-                )
-
-            }
-
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = temperature,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Row {
-                    Text(
-                        text = time,
-                        style = MaterialTheme.typography.bodyLarge,
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            Color.Yellow,
+                            Color(0xFF87CEEB)
+                        ),
+                        start = Offset(2500f, 0f), // Top-left corner
+                        end = Offset(0f, 1000f) // Bottom-right corner
                     )
+                )
+
+
+
+
+
+
+
+
+
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(48.dp),
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = location,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = condition,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            text = temperature,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Row {
+                            Text(
+                                text = time,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    thickness = 1.dp,
+                    color = Color.LightGray
+                )
+
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    items(items = weatherList) { weatherPrev ->
+                        WeatherPreviewItem(weatherPreview = weatherPrev, icon)
+                    }
                 }
             }
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            thickness = 1.dp,
-            color = Color.LightGray
-        )
-//        val weatherPrev = WeatherPreviewRepository()
-//        val getAllData = weatherPrev.getAllData()
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            items(items = weatherList) { weatherPrev ->
-                WeatherPreviewItem(weatherPreview = weatherPrev, icon)
-            }
-        }
     }
+
 }
 
 @Composable
@@ -304,9 +335,11 @@ fun WeatherPreviewItem(weatherPreview: Weather, icon: Int) {
             modifier = Modifier.padding(bottom = 4.dp),
         )
         Icon(painter = painterResource(icon), contentDescription = "",
+            tint = Color.Unspecified,
             modifier = Modifier
                 .size(42.dp)
-                .clip(CircleShape)
+
+
         )
         Text(text = weatherPreview.Temp,
             style = MaterialTheme.typography.labelLarge,

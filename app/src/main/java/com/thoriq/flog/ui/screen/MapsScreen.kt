@@ -107,6 +107,7 @@ fun MapsScreen(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 onMapLoaded = { isMapLoaded = true },
+
             ) {
                 // Add Marker at the given latitude and longitude
                 Marker(
