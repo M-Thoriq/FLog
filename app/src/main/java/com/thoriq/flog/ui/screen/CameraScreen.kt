@@ -164,52 +164,55 @@ fun CameraScreen(
                             .height(2800.dp),
                         shape = MaterialTheme.shapes.large,
                     ) {
-                        if (captureSuccess.value) {
-                            imageUri.value?.let { uri ->
+                        Box {
+                            if (captureSuccess.value) {
+                                imageUri.value?.let { uri ->
+                                    // AsyncImage centered and overlapping the top of the Card
+                                    AsyncImage(
+                                        model = uri,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(160.dp)
+                                            .align(Alignment.TopCenter) // Center horizontally within the Card
+                                            .offset(y = -80.dp) // Move up to overlap the Card
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                            } else {
+                                Text(
+                                    "No image captured yet",
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
 
-                                AsyncImage(
-                                    model = uri,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .offset(x = 0.dp, y = -48.dp)
-                                        .size(240.dp)
-                                        .padding(20.dp)
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.Crop
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(top = 100.dp) // Adjust padding to avoid overlapping AsyncImage
+                                    .fillMaxSize()
+                            ) {
+                                Text(
+                                    text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish,
+                                    color = Color(0xFF000000),
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.fillMaxWidth()
                                 )
 
+                                Spacer(modifier = Modifier.height(8.dp))
 
+                                Text(
+                                    text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description,
+                                    color = Color(0xFF000000),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
-                        } else {
-                            Text("No image captured yet",)
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .padding(all = 16.dp)
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                        ) {
-
-                            Text(
-                                text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish, // Use fish as title
-                                color = Color(0xFF000000),
-                                fontSize = 20.sp, // Set the font size manually for the title
-                                fontWeight = FontWeight.Bold, // Set font weight to bold for the title
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp)) // Add spacing between title and description
-
-                            Text(
-                                text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description, // Use description as body text
-                                color = Color(0xFF000000),
-                                fontSize = 16.sp, // Set the font size manually for the description
-                                fontWeight = FontWeight.Normal, // Normal font weight for the description
-                                modifier = Modifier.fillMaxWidth()
-                            )
                         }
                     }
+
                 }
 
             }
