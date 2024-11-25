@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -139,11 +140,13 @@ fun MapsScreen(
                         .padding(16.dp)
                         .padding(horizontal = 0.dp, vertical = 6.dp)
                         .clip(shape = RoundedCornerShape(32.dp))
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     var previousText by remember { mutableStateOf("") }
 
                     TextField(
                         value = searchQuery,
+//                        colors = TextFieldColors(M),
                         onValueChange = { newText ->
                             if (newText.endsWith("\n")) {
                                 matchingLocations = locationList.filter {
@@ -165,6 +168,9 @@ fun MapsScreen(
                             unfocusedContainerColor = Color.White,
                             focusedContainerColor = Color.White
                         )
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 0.dp),
                     )
 
                     Button(

@@ -311,6 +311,5 @@ fun WeatherPreviewItem(weatherPreview: Weather, icon: Int) {
         Text(text = weatherPreview.Temp,
             style = MaterialTheme.typography.labelLarge,
         )
-
     }
 }
