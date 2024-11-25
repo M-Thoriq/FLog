@@ -1,5 +1,6 @@
 package com.thoriq.flog
 
+import RegisterScreen
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -67,6 +68,7 @@ import com.thoriq.flog.ui.screen.AccountScreen
 import com.thoriq.flog.ui.screen.CameraScreen
 import com.thoriq.flog.ui.screen.FishScreen
 import com.thoriq.flog.ui.screen.HomeScreen
+import com.thoriq.flog.ui.screen.LoginScreen
 import com.thoriq.flog.ui.screen.MapsScreen
 import com.thoriq.flog.ui.theme.FlogTheme
 import com.thoriq.flog.viewModel.FishViewModel
@@ -286,7 +288,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
 //                            floatingActionButton = {
-//                                if (currentScreen == Screen.Camera.route) {
+//                                if   (currentScreen == Screen.Camera.route) {
 //                                    FloatingActionButton(onClick = {
 //                                        isSheetOpen = true
 //                                    }) {
@@ -353,7 +355,8 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable(Screen.Account.route) {
                                     topBarTitle = "Account"
-                                    AccountScreen()
+//                                    AccountScreen()
+                                    LoginScreen()
                                 }
                             }
                         }
