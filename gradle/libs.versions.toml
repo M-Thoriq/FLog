@@ -22,6 +22,8 @@ generativeai = "0.9.0"
 playServicesLocation = "21.3.0"
 firebaseCrashlyticsBuildtools = "3.0.2"
 roomRuntime = "2.6.1"
+firebaseAuthKtx = "23.1.0"
+firebaseAuth = "23.1.0"
 
 [libraries]
 android-async-http = { module = "com.loopj.android:android-async-http", version.ref = "androidAsyncHttp" }
@@ -56,6 +58,8 @@ maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", ve
 maps-compose-widgets = { module = "com.google.maps.android:maps-compose-widgets", version.ref = "mapsComposeWidgets" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
