@@ -24,16 +24,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
@@ -63,8 +69,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.thoriq.flog.R
 import com.thoriq.flog.data.FishLocation
-
-
 
 
 
@@ -126,17 +130,17 @@ fun MapsScreen(
                 }
             }
 
-            // Overlay Row on top of the GoogleMap
+
             Column(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(16.dp)
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                // Search Bar Row
                 Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .padding(horizontal = 0.dp, vertical = 6.dp)
+                        .clip(shape = RoundedCornerShape(32.dp))
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clip(RoundedCornerShape(8.dp))
                 ) {
                     var previousText by remember { mutableStateOf("") }
 
@@ -144,66 +148,59 @@ fun MapsScreen(
                         value = searchQuery,
 //                        colors = TextFieldColors(M),
                         onValueChange = { newText ->
-                            // Check if Enter key (newline) was pressed
                             if (newText.endsWith("\n")) {
-                                // Trigger the same action as the Search Button
                                 matchingLocations = locationList.filter {
                                     it.title.contains(searchQuery.trim(), ignoreCase = true)
                                 }
-                                currentIndex = 0 // Start with the first result if matches are found
+                                currentIndex = 0
 
-                                // Move camera to the first matching location if any
                                 if (matchingLocations.isNotEmpty()) {
                                     moveToLocation(matchingLocations[currentIndex], cameraPositionState)
                                 }
-
-                                // Update searchQuery without newline
                                 searchQuery = newText.trim()
                             } else {
-                                // Update normally if no newline
                                 searchQuery = newText
                             }
-
-                            // Store current text for the next comparison
                             previousText = newText
                         },
-                        placeholder = { Text("Search Fish in Your Area") },
+                        placeholder = { Text("Search fish location...") },
+                        colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.White,
+                            focusedContainerColor = Color.White
+                        )
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 0.dp),
                     )
 
-                    // Search Button
                     Button(
                         onClick = {
-                            // Filter locations matching the search query
                             matchingLocations = locationList.filter {
                                 it.title.contains(searchQuery, ignoreCase = true)
                             }
-                            currentIndex = 0 // Start with the first result if matches are found
+                            currentIndex = 0
 
-                            // Move camera to the first matching location if any
                             if (matchingLocations.isNotEmpty()) {
                                 moveToLocation(matchingLocations[currentIndex], cameraPositionState)
                             }
                         },
                         modifier = Modifier
-                            .heightIn(min = 56.dp) // Set a min height to match the TextField's height
-                            .padding(start = 0.dp), // Add padding between the TextField and Button
-                        shape = RectangleShape, // Remove corner rounding
-                        contentPadding = PaddingValues(horizontal = 16.dp) // Adjust padding as needed
+                            .heightIn(min = 56.dp),
+                        shape = RectangleShape,
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        )
                     ) {
-                        Icon(Icons.Default.Search, contentDescription = "Search Icon")
+                        Icon(Icons.Default.Search, contentDescription = "Search Icon", tint = Color.Black)
                     }
-
-
                 }
-                if (matchingLocations.size > 1) {
-                    Spacer(modifier = Modifier.height(8.dp)) // Space between search bar and navigation buttons
+            }
+
+            if (matchingLocations.size > 1) {
 
                     Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Button(onClick = {
                             // Move to the previous marker
@@ -215,11 +212,11 @@ fun MapsScreen(
                             shape = RectangleShape
 
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Search Icon")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Search Icon")
 
                         }
 
-                        Divider(
+                        HorizontalDivider(
                             color = Color.Gray,
                             modifier = Modifier
                                 .fillMaxHeight() // Match button height
@@ -236,7 +233,7 @@ fun MapsScreen(
                             shape = RectangleShape
 
                         ) {
-                            Icon(Icons.Default.ArrowForward, contentDescription = "Search Icon")
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Search Icon")
 
                         }
                     }
@@ -246,7 +243,7 @@ fun MapsScreen(
 
 
                 }
-            }
+
         }
 
         if (!isMapLoaded) {
