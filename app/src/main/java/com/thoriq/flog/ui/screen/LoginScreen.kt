@@ -1,6 +1,9 @@
 package com.thoriq.flog.ui.screen
 
+import RegisterScreen
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,77 +38,113 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
     var password by remember { mutableStateOf("") }
     var loginStatus by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var regis by remember { mutableStateOf(false) }
+    var regisMessage by remember { mutableStateOf("") }
 
     // Basic UI elements for the static login screen
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Login",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
 
-        TextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Email") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-        )
 
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-        )
+    Box {
+        if (!regis){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = regisMessage,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+                Text(
+                    text = "Login",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
 
-        Button(
-            onClick = {
-                isLoading = true
-                loginWithFirebase(auth, username, password) { success, message ->
-                    isLoading = false
-                    if (success) {
-                        loginStatus = "Login successful!"
-                        onLoginSuccess(true,username) // Notify the parent of success
+                TextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = { Text("Email") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                )
+
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                )
+
+                Button(
+                    onClick = {
+                        isLoading = true
+                        loginWithFirebase(auth, username, password) { success, message ->
+                            isLoading = false
+                            if (success) {
+                                loginStatus = "Login successful!"
+                                onLoginSuccess(true,username) // Notify the parent of success
+                            } else {
+                                loginStatus = "Error: $message"
+                                onLoginSuccess(false,"") // Notify the parent of failure
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.Red)
                     } else {
-                        loginStatus = "Error: $message"
-                        onLoginSuccess(false,"") // Notify the parent of failure
+                        Text("Login")
                     }
                 }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.Red)
-            } else {
-                Text("Login")
+
+                Text(
+                    text = loginStatus,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+
+                Text(
+                    text = "Don't have an account? Sign up",
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .clickable {
+                            // Navigate to RegisterScreen directly when clicked
+                            regis = true // This will navigate to the Register screen
+                        }
+                )
             }
         }
 
-        Text(
-            text = loginStatus,
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-    }
+        else{
+            RegisterScreen(auth = auth){success,message->
+                if (success) {
+                    regis = false
+                    regisMessage = message
+
+                }
+
+            }
+
+        }        }
 }
 
 fun loginWithFirebase(
