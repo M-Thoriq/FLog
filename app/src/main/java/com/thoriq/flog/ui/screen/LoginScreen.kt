@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance()) {
+fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess: (Boolean,String) -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginStatus by remember { mutableStateOf("") }
@@ -79,7 +79,13 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance()) {
                 isLoading = true
                 loginWithFirebase(auth, username, password) { success, message ->
                     isLoading = false
-                    loginStatus = if (success) "Login successful!" else "Error: $message"
+                    if (success) {
+                        loginStatus = "Login successful!"
+                        onLoginSuccess(true,username) // Notify the parent of success
+                    } else {
+                        loginStatus = "Error: $message"
+                        onLoginSuccess(false,"") // Notify the parent of failure
+                    }
                 }
             },
             modifier = Modifier
@@ -99,7 +105,6 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance()) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 32.dp)
         )
-
     }
 }
 
@@ -124,8 +129,8 @@ fun loginWithFirebase(
         }
 }
 
-@Preview
-@Composable
-private fun MapsPrev() {
-    LoginScreen()
-}
+//@Preview
+//@Composable
+//private fun MapsPrev() {
+//    LoginScreen()
+//}

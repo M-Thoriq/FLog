@@ -58,6 +58,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.loopj.android.http.AsyncHttpClient.log
 import com.thoriq.flog.data.BottomBarItemData
 import com.thoriq.flog.data.Fish
 import com.thoriq.flog.data.Screen
@@ -91,7 +92,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var hasLocationPermission by remember { mutableStateOf(false) }
+            var login by remember { mutableStateOf(false) }
             val context = LocalContext.current
+            var name by remember { mutableStateOf("") }
 
             val requestPermissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestPermission()
@@ -267,7 +270,18 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            if (hasLocationPermission) {
+            if (!login) {
+                FlogTheme {
+                    LoginScreen { success,username ->
+                        if (success) {
+                            login = true
+                            name = username
+                        }
+                    }
+                }
+            }
+
+            if (login && hasLocationPermission) {
                 FlogTheme {
                     // A surface container using the 'background' color from the theme
                     Surface(
@@ -356,13 +370,15 @@ class MainActivity : ComponentActivity() {
                                 composable(Screen.Account.route) {
                                     topBarTitle = "Account"
 //                                    AccountScreen()
-                                    LoginScreen()
+                                    AccountScreen(name)
                                 }
                             }
                         }
                     }
                 }
-            } else {
+            }
+
+            else if(!hasLocationPermission){
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
