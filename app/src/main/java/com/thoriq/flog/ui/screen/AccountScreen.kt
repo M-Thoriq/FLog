@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.thoriq.flog.R
 
 @Composable
-fun AccountScreen(modifier: Modifier = Modifier) {
+fun AccountScreen(name:String,modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,7 +68,7 @@ fun AccountScreen(modifier: Modifier = Modifier) {
             ) {
                 Row {
                     Text(
-                        "Harry Potter",
+                        name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp
@@ -76,7 +76,7 @@ fun AccountScreen(modifier: Modifier = Modifier) {
                 }
                 Row {
                     Text(
-                        "hepot160903@gmail.com",
+                        name,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
