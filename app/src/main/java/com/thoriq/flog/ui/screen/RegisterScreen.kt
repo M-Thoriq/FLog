@@ -1,3 +1,4 @@
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,7 +16,7 @@ import androidx.compose.ui.unit.*
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun RegisterScreen(auth: FirebaseAuth = FirebaseAuth.getInstance()) {
+fun RegisterScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(),onRegisterSuccess: (Boolean,String) -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -78,6 +79,13 @@ fun RegisterScreen(auth: FirebaseAuth = FirebaseAuth.getInstance()) {
                     registerWithFirebase(auth, email, password) { success, message ->
                         isLoading = false
                         registrationStatus = if (success) "Registration successful!" else "Error: $message"
+                        if (success) {
+                            registrationStatus = "Register successful!"
+                            onRegisterSuccess(true,"Register Ssuccessfully, Now Login ajg") // Notify the parent of success
+                        } else {
+                            registrationStatus = "Error: $message"
+                            onRegisterSuccess(false,"") // Notify the parent of failure
+                        }
                     }
                 } else {
                     registrationStatus = "Passwords do not match."
@@ -97,6 +105,15 @@ fun RegisterScreen(auth: FirebaseAuth = FirebaseAuth.getInstance()) {
         Text(
             text = registrationStatus,
             modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "have an account? Sign in",
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .clickable {
+                    onRegisterSuccess(true,"")
+                }
         )
     }
 }
