@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "637074618784",
-    "project_id": "flog-e2361",
-    "storage_bucket": "flog-e2361.firebasestorage.app"
+    "project_number": "692598555858",
+    "project_id": "flog-e4b12",
+    "storage_bucket": "flog-e4b12.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:637074618784:android:a7c1eac919afcfe799ccc5",
+        "mobilesdk_app_id": "1:692598555858:android:d848c33685780e7774990b",
         "android_client_info": {
           "package_name": "com.thoriq.flog"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA0OqyyOld6HvXZB0eps8wdLrskQFLOxVM"
+          "current_key": "FIREBASE KEY"
         }
       ],
       "services": {
