@@ -220,7 +220,6 @@ fun WeatherCard(
                     style = MaterialTheme.typography.bodyMedium,
 
                 )
-
             }
 
             Column(
