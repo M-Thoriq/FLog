@@ -33,6 +33,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import android.content.Context
+import android.content.SharedPreferences
+
+private const val PREFS_NAME = "user_prefs"
+private const val KEY_IS_LOGGED_IN = "is_logged_in"
+private const val KEY_USER_EMAIL = "user_email"
+
+fun saveLoginState(context: Context, isLoggedIn: Boolean, email: String) {
+    val sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn)
+    editor.putString(KEY_USER_EMAIL, email)
+    editor.apply()  // or editor.commit() if you want synchronous storage
+}
+
+fun getLoginState(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false)
+}
+
+fun getUserEmail(context: Context): String? {
+    val sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    return sharedPreferences.getString(KEY_USER_EMAIL, null)
+}
+
 
 @Composable
 fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess: (Boolean,String) -> Unit) {
@@ -43,12 +70,17 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
     var isLoading by remember { mutableStateOf(false) }
     var regis by remember { mutableStateOf(false) }
     var regisMessage by remember { mutableStateOf("") }
+    val isLoggedIn = remember { getLoginState(context) }
+    val loggedInEmail = remember { getUserEmail(context) }
 
     // Basic UI elements for the static login screen
 
 
     Box {
-        if (!regis){
+        if(isLoggedIn){
+            onLoginSuccess(true,username)
+        }
+        else if (!regis) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,6 +129,7 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
                         loginWithFirebase(auth, username, password) { success, message ->
                             isLoading = false
                             if (success) {
+                                saveLoginState(context, true, username)
                                 Toast.makeText(context,"Login SuckSeed", Toast.LENGTH_SHORT).show()
                                 onLoginSuccess(true,username) // Notify the parent of success
                             } else {
@@ -171,6 +204,20 @@ fun loginWithFirebase(
             }
         }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //@Preview
 //@Composable
