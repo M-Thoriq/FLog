@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import com.thoriq.flog.RecentCatchItem
 import com.thoriq.flog.data.Weather
@@ -68,7 +69,7 @@ fun HomeScreen(
     val context = LocalContext.current
 
     val nowWeathers = getNowWeather(weatherViewModel.weatherList)
-    val isLoaded : Flow<Boolean> = weatherViewModel.isLoaded
+    val isLoaded: Flow<Boolean> = weatherViewModel.isLoaded
 
     Column(
         modifier = Modifier
@@ -107,7 +108,7 @@ fun HomeScreen(
             95 -> "Thunderstorm"
             else -> "Heavy Thunderstorm"
         }
-        if (isLoaded.collectAsState(initial = false).value){
+        if (isLoaded.collectAsState(initial = false).value) {
             WeatherCard(
                 temperature = "${nowWeathers?.Temp}°C",
                 condition = weatherCondition,
@@ -169,7 +170,7 @@ fun GreetingSection(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 15.dp)
         ) {
-            Text(text = "Good Morning", fontSize = 24.sp)
+            Text(text = "Welcome!!", fontSize = 24.sp)
             Text(text = "Have a nice day!")
         }
     }
@@ -185,75 +186,104 @@ fun WeatherCard(
     icon: Int,
     weatherList: List<Weather>
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .padding(16.dp)
     ) {
-        Row(
+        Image(
+            painter = painterResource(id = R.drawable.hd_wallpaper_rainy_forest_forest_green_nature_new_rain_road_thumbnail),
+            contentDescription = "",
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-            )
+                .clip(RoundedCornerShape(16.dp))
+                .size(362.dp)
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = location,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = condition,
-                    style = MaterialTheme.typography.bodyMedium,
-
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = temperature,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Row {
-                    Text(
-                        text = time,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-            }
-        }
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            thickness = 1.dp,
-            color = Color.LightGray
         )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth()
+        ) {
+            Card(
+                modifier = modifier
+
+                    .fillMaxWidth()
+
+                ,
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                    ,
+
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = location,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = condition,
+                            style = MaterialTheme.typography.bodyMedium,
+
+                            )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            text = temperature,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Row {
+                            Text(
+                                text = time,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
+                    }
+                }
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    thickness = 1.dp,
+                    color = Color.LightGray
+                )
 //        val weatherPrev = WeatherPreviewRepository()
 //        val getAllData = weatherPrev.getAllData()
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            items(items = weatherList) { weatherPrev ->
-                WeatherPreviewItem(weatherPreview = weatherPrev, icon)
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    items(items = weatherList) { weatherPrev ->
+                        WeatherPreviewItem(weatherPreview = weatherPrev, icon)
+                    }
+                }
             }
+
         }
+
+
     }
+
 }
 
 @Composable
@@ -298,16 +328,19 @@ fun WeatherPreviewItem(weatherPreview: Weather, icon: Int) {
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "${getHourFromTimeString(weatherPreview.Time)}:00 WIB",
+        Text(
+            text = "${getHourFromTimeString(weatherPreview.Time)}:00 WIB",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
         )
-        Icon(painter = painterResource(icon), contentDescription = "",
+        Icon(
+            painter = painterResource(icon), contentDescription = "",
             modifier = Modifier
                 .size(42.dp)
                 .clip(CircleShape)
         )
-        Text(text = weatherPreview.Temp,
+        Text(
+            text = weatherPreview.Temp,
             style = MaterialTheme.typography.labelLarge,
         )
     }
