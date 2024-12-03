@@ -317,7 +317,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            if (                                                                                                         hasLocationPermission) {
+            if (!login) {
+                FlogTheme {
+                    LoginScreen { success,username ->
+                        if (success) {
+                            login = true
+                            name = username
+                        }
+                    }
+                }
+            }
+            if (login &&  hasLocationPermission) {
                 FlogTheme {
                     // A surface container using the 'background' color from the theme
                     Surface(
