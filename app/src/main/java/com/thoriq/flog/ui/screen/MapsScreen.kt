@@ -139,7 +139,7 @@ fun MapsScreen(
                     modifier = Modifier
                         .padding(16.dp)
                         .padding(horizontal = 0.dp, vertical = 6.dp)
-                        .clip(shape = RoundedCornerShape(32.dp))
+                        .clip(shape = RoundedCornerShape(32.dp)),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     var previousText by remember { mutableStateOf("") }
@@ -167,7 +167,7 @@ fun MapsScreen(
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = Color.White,
                             focusedContainerColor = Color.White
-                        )
+                        ),
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 0.dp),
