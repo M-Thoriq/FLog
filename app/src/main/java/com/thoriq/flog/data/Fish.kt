@@ -24,6 +24,12 @@ data class Fish(
     @ColumnInfo(name = "harga")
     var harga: Double?,
 
+    @ColumnInfo(name = "latitude")
+    var latitude: Double?,
+
+    @ColumnInfo(name = "longitude")
+    var longitude: Double?,
+
     @ColumnInfo(name = "created_at")
     var createdAt: String
 ) : Parcelable

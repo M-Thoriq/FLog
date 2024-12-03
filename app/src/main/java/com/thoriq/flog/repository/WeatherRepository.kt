@@ -16,6 +16,7 @@ import com.google.android.gms.location.LocationServices
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.thoriq.flog.config.STATE
+import com.thoriq.flog.data.Lokasi
 import com.thoriq.flog.data.Weather
 import cz.msebera.android.httpclient.Header
 import kotlinx.coroutines.CoroutineScope
@@ -29,15 +30,27 @@ import kotlin.coroutines.resume
 
 class WeatherRepository(private var context: Context) {
 
-    companion object  {
-        var latitude: Double = 0.0
-        var longitude: Double = 0.0
-        var mLocation: Location? = null
+    fun getLatLong(): Lokasi {
+        CoroutineScope(Dispatchers.IO).launch {
+            getLatandLong()
+            getLastLocation()
+        }
+        val lat = mLocation?.latitude ?: 0.0
+        val long = mLocation?.longitude ?: 0.0
+
+        return Lokasi(lat, long)
     }
 
+    companion object {
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
+        var mLocation: Location? =null
+    }
+    val lokasi: Lokasi by lazy {
+        getLatLong()
+    }
     private val requestPermissionCode = 1
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private fun saveWeatherData(context: Context, weatherList: List<Weather>) {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()

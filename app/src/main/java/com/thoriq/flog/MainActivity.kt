@@ -1,6 +1,5 @@
 package com.thoriq.flog
 
-import RegisterScreen
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -10,17 +9,20 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Anchor
+import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Home
@@ -28,8 +30,6 @@ import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -49,6 +49,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -58,7 +61,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.loopj.android.http.AsyncHttpClient.log
 import com.thoriq.flog.data.BottomBarItemData
 import com.thoriq.flog.data.Fish
 import com.thoriq.flog.data.Screen
@@ -84,6 +86,10 @@ class MainActivity : ComponentActivity() {
         "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
     private lateinit var fishViewModel: FishViewModel
     private lateinit var weatherViewModel: WeatherViewModel
+    val latitude: Double
+        get() = WeatherRepository.latitude
+    val longitude: Double
+        get() = WeatherRepository.longitude
 
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -207,15 +213,15 @@ class MainActivity : ComponentActivity() {
                             isSheetEdited = false
                         },
                     ) {
+                        val lokasi = WeatherRepository(this@MainActivity).getLatLong()
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
                         ) {
-                            Text(text = "Add Fish", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = if (isSheetEdited) "Edit Fish" else "Add Fish", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
 
                             Spacer(modifier = Modifier.height(16.dp))
-
                             // Add EditText for fish name
 
                             val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
@@ -223,31 +229,72 @@ class MainActivity : ComponentActivity() {
                                     nama = "",
                                     berat = 0.0,
                                     harga = 0.0,
-                                    createdAt = ""
+                                    createdAt = "",
+                                    latitude = 0.0,
+                                    longitude = 0.0
                                 )
                             )
-                            var text by remember { mutableStateOf(TextFieldValue("")) }
+                            var namaIkan by remember { mutableStateOf(TextFieldValue("")) }
+                            var beratIkan by remember { mutableStateOf(TextFieldValue("")) }
+                            var hargaIkan by remember { mutableStateOf(TextFieldValue("")) }
                             LaunchedEffect(fishEdit) {
                                 if (isSheetEdited) {
-                                    text = TextFieldValue(fishEdit.nama!!)
+                                    namaIkan = TextFieldValue(fishEdit.nama!!)
+                                    beratIkan = TextFieldValue(fishEdit.berat.toString())
+                                    hargaIkan = TextFieldValue(fishEdit.harga.toString())
                                 }
                             }
-                            TextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = text,
-                                onValueChange = {
-                                    text = it
-                                },
-                                label = { Text(text = "Your Label") },
-                                placeholder = { Text(text = "Your Placeholder/Hint") },
-                            )
+                            Column(modifier = Modifier.fillMaxWidth()) {
+    //                                Text("Fish Name")
+    //                                Spacer(modifier = Modifier.height(12.dp))
+                                TextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    value = namaIkan,
+                                    onValueChange = {
+                                        namaIkan = it
+                                    },
+                                    label = { Text(text = "Fish Name") },
+                                    placeholder = { Text(text = "Salmon") },
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Icon(imageVector = Icons.Default.MonetizationOn, contentDescription = "Ikan", tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(32.dp))
+                                    TextField(
+                                        modifier = Modifier.width(120.dp),
+                                        value = hargaIkan,
+                                        onValueChange = {
+                                            hargaIkan = it
+                                        },
+                                        label = { Text(text = "Price/kg") },
+                                        placeholder = { Text(text = "0.0 Rp") },
+                                    )
+                                }
 
-                            Button(onClick = {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Icon(imageVector = Icons.Default.Balance, contentDescription = "Ikan", tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(32  .dp))
+                                    TextField(
+                                        modifier = Modifier.width(150.dp),
+                                        value = beratIkan,
+                                        onValueChange = {
+                                            beratIkan = it
+                                        },
+                                        label = { Text(text = "Weight") },
+                                        placeholder = { Text(text = "0.0 Kg") },
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(modifier = Modifier.fillMaxWidth(),
+                                onClick = {
                                 val fish = Fish(
-                                    nama = text.text,
-                                    berat = 2.5, // Replace with actual value
-                                    harga = 20000.0, // Replace with actual value
-                                    createdAt = ""
+                                    nama = namaIkan.text,
+                                    berat = beratIkan.text.toDouble(),
+                                    harga = hargaIkan.text.toDouble(),
+                                    createdAt = "",
+                                    latitude = lokasi.latitude,
+                                    longitude = lokasi.longitude
                                 )
                                 if (isSheetEdited) {
                                     fishViewModel.updateFish(fish, fishEdit.id)
@@ -270,18 +317,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            if (!login) {
-                FlogTheme {
-                    LoginScreen { success,username ->
-                        if (success) {
-                            login = true
-                            name = username
-                        }
-                    }
-                }
-            }
-
-            if (login && hasLocationPermission) {
+            if (                                                                                                         hasLocationPermission) {
                 FlogTheme {
                     // A surface container using the 'background' color from the theme
                     Surface(
@@ -301,31 +337,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             },
-//                            floatingActionButton = {
-//                                if   (currentScreen == Screen.Camera.route) {
-//                                    FloatingActionButton(onClick = {
-//                                        isSheetOpen = true
-//                                    }) {
-//                                        Icon(
-//                                            imageVector = Icons.Filled.Add,
-//                                            contentDescription = "Add"
-//                                        )
-//                                    }
-//                                }
-//                            },
-//                            floatingActionButtonPosition = FabPosition.End,
-//                            topBar = {
-//                                TopAppBar(
-//                                    title = {
-//                                        Text(
-//                                            text = topBarTitle,
-//                                            fontSize = 25.sp,
-//                                        )
-//                                    },
-//                                    scrollBehavior = scrollBehavior
-//                                )
-//                            },
-//                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                         ) { paddingValues ->
                             NavHost(
                                 modifier = Modifier.padding(bottom = 72.dp),
@@ -342,7 +353,8 @@ class MainActivity : ComponentActivity() {
                                         .collectAsState(initial = emptyList()).value
                                     FishScreen(
                                         fishes = fishes,
-                                        fishViewModel = fishViewModel
+                                        fishViewModel = fishViewModel,
+                                        onAddButtonClick = { isSheetOpen = true },
                                     ) {
                                         isSheetOpen = true
                                         selectedFish = it

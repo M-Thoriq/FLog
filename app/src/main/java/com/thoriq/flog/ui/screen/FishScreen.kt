@@ -1,6 +1,7 @@
 package com.thoriq.flog.ui.screen
 
 import android.app.Application
+import android.util.Log
 import android.widget.EditText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -49,7 +51,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -70,6 +74,7 @@ fun FishScreen(
     modifier: Modifier = Modifier,
     fishViewModel: FishViewModel,
     fishes: List<Fish>,
+    onAddButtonClick: () -> Unit,
     onSelectedFish: (Int) -> Unit
 ) {
     Column(
@@ -80,20 +85,28 @@ fun FishScreen(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 24.dp)
+            modifier = Modifier.padding(bottom = 24.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Filled.Anchor,
-                contentDescription = "Anchor Icon",
-                tint = MaterialTheme.colorScheme.primary ,
-                modifier = Modifier.size(36.dp)
-            )
-            Text(text="Catch", style = MaterialTheme.typography.titleLarge, modifier = Modifier
-                .padding(start = 8.dp),
-                fontWeight = FontWeight.Bold,
-                fontSize = 36.sp
+            Row {
+                Icon(
+                    imageVector = Icons.Filled.Anchor,
+                    contentDescription = "Anchor Icon",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(36.dp)
+                )
+                Text(
+                    text = "Catch", style = MaterialTheme.typography.titleLarge, modifier = Modifier
+                        .padding(start = 8.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 36.sp
 
-            )
+                )
+            }
+
+            IconButton(onClick = { onAddButtonClick() }, modifier = Modifier.clip(CircleShape).background(MaterialTheme.colorScheme.primary)) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Icon Add", tint = MaterialTheme.colorScheme.onPrimary)
+            }
         }
 
         if (fishes.isEmpty()) {
@@ -105,7 +118,10 @@ fun FishScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(text = "No fishing logs! Add one now!", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "No fishing logs! Add one now!",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
         } else {
@@ -119,9 +135,9 @@ fun FishScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondary // Set the card's background color
-                                ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer // Set the card's background color
+                        ),
 
                         shape = RoundedCornerShape(16.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -132,9 +148,10 @@ fun FishScreen(
                             Column(
                                 modifier = Modifier.weight(8f)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.ic_flog),
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
                                 )
                             }
                             Column(
@@ -147,6 +164,7 @@ fun FishScreen(
                                     Text(
                                         " ${fish.nama}",
                                         style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier.padding(bottom = 12.dp),
                                         fontWeight = FontWeight.Bold
                                     )
@@ -155,6 +173,7 @@ fun FishScreen(
                                     Text(
                                         "Berat: ${fish.berat} kg",
                                         style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier.padding(start = 5.dp)
                                     )
                                 }
@@ -162,6 +181,7 @@ fun FishScreen(
                                     Text(
                                         "Harga: Rp ${fish.harga}",
                                         style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier.padding(start = 5.dp)
 
                                     )
@@ -170,7 +190,7 @@ fun FishScreen(
                                     Text(
                                         " ${fish.createdAt}",
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = Color.Gray,
+                                        color = MaterialTheme.colorScheme.secondary,
                                         modifier = Modifier.padding(start = 2.dp)
                                     )
                                 }
@@ -186,7 +206,7 @@ fun FishScreen(
                                             imageVector = Icons.Filled.Edit,
                                             contentDescription = "Update",
 
-                                        )
+                                            )
                                     }
                                 }
                                 Row(
@@ -196,7 +216,7 @@ fun FishScreen(
                                         Icon(
                                             imageVector = Icons.Filled.Delete,
                                             contentDescription = "Delete",
-                                            tint = Color.Red
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                                         )
                                     }
                                 }
