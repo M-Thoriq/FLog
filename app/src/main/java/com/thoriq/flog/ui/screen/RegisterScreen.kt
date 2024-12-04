@@ -81,7 +81,7 @@ fun RegisterScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(),onRegisterSuc
                         registrationStatus = if (success) "Registration successful!" else "Error: $message"
                         if (success) {
                             registrationStatus = "Register successful!"
-                            onRegisterSuccess(true,"Register Ssuccessfully, Now Login ajg") // Notify the parent of success
+                            onRegisterSuccess(true,"Register Ssuccessfully") // Notify the parent of success
                         } else {
                             registrationStatus = "Error: $message"
                             onRegisterSuccess(false,"") // Notify the parent of failure
