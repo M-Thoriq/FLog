@@ -60,6 +60,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.google.maps.android.compose.CameraPositionState
@@ -69,9 +70,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.thoriq.flog.R
 import com.thoriq.flog.data.FishLocation
-
-
-
 
 // Update MapsScreen to accept a Modifier parameter
 @Composable
@@ -84,8 +82,8 @@ fun MapsScreen(
 ) {
 
     val context = LocalContext.current
-    val markerIcon = BitmapFactory.decodeResource(context.resources, R.drawable.ikan2)
-    val iconIkan = Bitmap.createScaledBitmap(markerIcon, 120, 120, false)
+    val markerIcon = BitmapFactory.decodeResource(context.resources, R.drawable.marker)
+    val iconIkan = Bitmap.createScaledBitmap(markerIcon, 120, 145, false)
     var isMapLoaded by remember { mutableStateOf(false) }
 
 
