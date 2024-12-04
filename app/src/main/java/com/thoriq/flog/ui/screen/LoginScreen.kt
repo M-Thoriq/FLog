@@ -1,6 +1,8 @@
 package com.thoriq.flog.ui.screen
 
 import RegisterScreen
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -31,21 +34,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.thoriq.flog.repository.Login
+import com.thoriq.flog.repository.WeatherRepository
 
 @Composable
 fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess: (Boolean,String) -> Unit) {
+    val context = LocalContext.current
+    val Login = Login()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginStatus by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var regis by remember { mutableStateOf(false) }
     var regisMessage by remember { mutableStateOf("") }
+    val isLoggedIn = remember { Login.getLoginState(context) }
+    val loggedInEmail = remember { Login.getUserEmail(context) }
 
     // Basic UI elements for the static login screen
 
 
     Box {
-        if (!regis){
+        if(isLoggedIn){
+
+            if (loggedInEmail != null) {
+                onLoginSuccess(true,loggedInEmail)
+            }
+        }
+        else if (!regis) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -55,7 +72,6 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
             ) {
                 Text(
                     text = regisMessage,
-                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
@@ -86,7 +102,7 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
                         .padding(bottom = 16.dp),
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 )
 
                 Button(
@@ -95,7 +111,8 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
                         loginWithFirebase(auth, username, password) { success, message ->
                             isLoading = false
                             if (success) {
-                                loginStatus = "Login successful!"
+                                Login.saveLoginState(context, true, username)
+                                Toast.makeText(context,"Login SuckSeed", Toast.LENGTH_SHORT).show()
                                 onLoginSuccess(true,username) // Notify the parent of success
                             } else {
                                 loginStatus = "Error: $message"
@@ -116,9 +133,9 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
 
                 Text(
                     text = loginStatus,
-                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    color = Color.Red
                 )
 
                 Text(
@@ -128,7 +145,9 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
                         .padding(top = 16.dp)
                         .clickable {
                             // Navigate to RegisterScreen directly when clicked
+                            loginStatus = ""
                             regis = true // This will navigate to the Register screen
+
                         }
                 )
             }
@@ -138,7 +157,7 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
             RegisterScreen(auth = auth){success,message->
                 if (success) {
                     regis = false
-                    regisMessage = message
+                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
 
                 }
 
@@ -167,6 +186,20 @@ fun loginWithFirebase(
             }
         }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //@Preview
 //@Composable

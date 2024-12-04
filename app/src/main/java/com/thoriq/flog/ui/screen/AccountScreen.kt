@@ -32,14 +32,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoriq.flog.R
+import com.thoriq.flog.repository.Login
 
 @Composable
 fun AccountScreen(name:String,modifier: Modifier = Modifier) {
+    val login = Login()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -248,15 +252,19 @@ fun AccountScreen(name:String,modifier: Modifier = Modifier) {
                         modifier = Modifier.size(28.dp)
                     )
                 }
-                Column(
-                    Modifier.weight(6f)
-                ) {
+                Button(onClick = {
+                    login.clearLoginState(context)
+                },modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)) {
                     Text(
                         "Log Out",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Medium
                     )
                 }
+
+
 
             }
         }
