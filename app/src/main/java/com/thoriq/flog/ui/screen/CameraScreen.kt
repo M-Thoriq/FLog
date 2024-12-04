@@ -202,7 +202,7 @@ fun CameraScreen(
                                 modifier = Modifier
                                     .zIndex(100.0f)
                                     .padding(top = 100.dp)
-                                    .size(160.dp)
+                                    .size(180.dp)
                                     .align(Alignment.TopCenter) // Center horizontally within the Card
                                     .offset(y = 16.dp) // Move up to overlap the Card
                                     .clip(CircleShape),
@@ -219,10 +219,10 @@ fun CameraScreen(
                         modifier = Modifier
                             .padding(top = 180.dp)
                             .padding(horizontal = 16.dp)
-                                .fillMaxWidth()
-                            .height(300.dp),
+                                .fillMaxWidth(),
+
                         shape = MaterialTheme.shapes.large,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                     ) {
                         Box {
 
@@ -230,8 +230,8 @@ fun CameraScreen(
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
-                                    .padding(top = 192.dp)
-                                    .padding(horizontal = 16.dp)// Adjust padding to avoid overlapping AsyncImage
+                                    .padding(top = 145.dp, bottom = 16.dp)
+                                    .padding(horizontal = 32.dp)// Adjust padding to avoid overlapping AsyncImage
                                     .fillMaxSize()
                             ) {
                                 Text(
@@ -239,7 +239,6 @@ fun CameraScreen(
                                     color = Color(0xFF000000),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.fillMaxWidth()
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
