@@ -25,10 +25,10 @@ data class Fish(
     var harga: Double?,
 
     @ColumnInfo(name = "latitude")
-    var latitude: Double?,
+    var latitude: Double,
 
     @ColumnInfo(name = "longitude")
-    var longitude: Double?,
+    var longitude: Double,
 
     @ColumnInfo(name = "created_at")
     var createdAt: String
