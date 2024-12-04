@@ -60,7 +60,7 @@ fun AccountScreen(name:String,modifier: Modifier = Modifier) {
                     .weight(7f)
             ) {
                 Image(
-                    painterResource(R.drawable.pngtree_clown_fish_marine_fish_decoration_png_image_4278349),
+                    painterResource(R.drawable._3f1eda09c78fa01cb765443993748ee),
                     contentDescription = "Back",
                     modifier = Modifier
                         .clip(CircleShape)

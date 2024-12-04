@@ -41,9 +41,14 @@ import android.content.ContentValues
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
@@ -114,29 +119,20 @@ fun CameraScreen(
             cameraLauncher.launch(uri) // Launch the camera to take a picture
         }
     }
-
+    Column(
+        modifier = Modifier
+            .padding(vertical = 36.dp)
+    ) {
+        Text("WOIII")
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(16.dp)
+            .padding(top = 48.dp)
             .verticalScroll(rememberScrollState())
     ) {
         // Display the captured image immediately after it's taken
-        if (captureSuccess.value) {
-            imageUri.value?.let { uri ->
-                AsyncImage(
-                    model = uri,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)// Adjust as desired for the cropping ratio
-                        .padding(4.dp),
-                    contentScale = ContentScale.Crop // Crops image if the height exceeds the aspect ratio
-                )
-            }
-        } else {
-            Text("No image captured yet", modifier = Modifier.align(Alignment.CenterHorizontally))
-        }
+
 
         // Display UI State (Progress, Success, Error)
         when (imageInterpretationUiState) {
@@ -157,41 +153,68 @@ fun CameraScreen(
 
             is ImageInterpretationUiState.Success -> {
                 onImageIdentified((imageInterpretationUiState as ImageInterpretationUiState.Success).fish)
-
-                Card(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = Color(0XFFFFFFFF))
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
 
-                    Column(
+                    Card(
                         modifier = Modifier
-                            .padding(all = 16.dp)
+                            .padding(top = 128.dp)
                             .fillMaxWidth()
+                            .height(2800.dp),
+                        shape = MaterialTheme.shapes.large,
                     ) {
-                        // Title text - fish name
-                        Text(
-                            text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish, // Use fish as title
-                            color = Color(0xFF000000),
-                            fontSize = 20.sp, // Set the font size manually for the title
-                            fontWeight = FontWeight.Bold, // Set font weight to bold for the title
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Box {
+                            if (captureSuccess.value) {
+                                imageUri.value?.let { uri ->
+                                    // AsyncImage centered and overlapping the top of the Card
+                                    AsyncImage(
+                                        model = uri,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(160.dp)
+                                            .align(Alignment.TopCenter) // Center horizontally within the Card
+                                            .offset(y = -80.dp) // Move up to overlap the Card
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                            } else {
+                                Text(
+                                    "No image captured yet",
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
 
-                        Spacer(modifier = Modifier.height(8.dp)) // Add spacing between title and description
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(top = 100.dp) // Adjust padding to avoid overlapping AsyncImage
+                                    .fillMaxSize()
+                            ) {
+                                Text(
+                                    text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish,
+                                    color = Color(0xFF000000),
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
 
-                        // Description text
-                        Text(
-                            text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description, // Use description as body text
-                            color = Color(0xFF000000),
-                            fontSize = 16.sp, // Set the font size manually for the description
-                            fontWeight = FontWeight.Normal, // Normal font weight for the description
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Text(
+                                    text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description,
+                                    color = Color(0xFF000000),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
                     }
+
                 }
+
             }
 
 
