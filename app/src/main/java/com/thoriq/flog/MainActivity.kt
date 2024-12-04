@@ -78,6 +78,8 @@ import com.thoriq.flog.viewModel.FishViewModel
 import com.thoriq.flog.viewModel.WeatherViewModel
 import com.thoriq.flog.viewModel.factory.ViewModelFactory
 
+
+
 class MainActivity : ComponentActivity() {
 
     private val weatherRepository = WeatherRepository(this)
