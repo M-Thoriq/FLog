@@ -2,6 +2,7 @@ package com.thoriq.flog.ui.screen
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -69,7 +70,9 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.thoriq.flog.R
+import com.thoriq.flog.data.Fish
 import com.thoriq.flog.data.FishLocation
+import com.thoriq.flog.data.Lokasi
 
 // Update MapsScreen to accept a Modifier parameter
 @Composable
@@ -77,26 +80,22 @@ fun MapsScreen(
     modifier: Modifier = Modifier,
     latitude: Double,
     longitude: Double,
-    jsonData: String
+    fishes: List<Fish>,
+    lokasi: Lokasi
 
 ) {
-
+    Log.d("fuck", "MapsScreen: $fishes")
     val context = LocalContext.current
     val markerIcon = BitmapFactory.decodeResource(context.resources, R.drawable.marker)
-    val iconIkan = Bitmap.createScaledBitmap(markerIcon, 120, 145, false)
+    val iconIkan = Bitmap.createScaledBitmap(markerIcon, 100, 145, false)
     var isMapLoaded by remember { mutableStateOf(false) }
 
 
-    val locationList: List<FishLocation> = remember {
-        val type = object : TypeToken<List<FishLocation>>() {}.type
-        Gson().fromJson(jsonData, type)
-    }
-
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(3.583, 98.666), 16f)
+        position = CameraPosition.fromLatLngZoom(LatLng(lokasi.latitude, lokasi.longitude), 16f)
     }
     var searchQuery by remember { mutableStateOf("") }
-    var matchingLocations by remember { mutableStateOf<List<FishLocation>>(emptyList()) }
+    var matchingLocations by remember { mutableStateOf<List<Fish>>(emptyList()) }
     var currentIndex by remember { mutableStateOf(0) }
 
     Box(
@@ -112,17 +111,17 @@ fun MapsScreen(
             ) {
                 // Add Marker at the given latitude and longitude
                 Marker(
-                    state = rememberMarkerState(position = LatLng(3.583, 98.666)),
+                    state = rememberMarkerState(position = LatLng(lokasi.latitude, lokasi.longitude)),
                     title = "Your Location",
                     snippet = "This is a marker at your specified location."
                 )
 
                 // Add other markers from locationList
-                locationList.forEach { location ->
+                fishes.forEach { location ->
                     Marker(
                         state = rememberMarkerState(position = LatLng(location.latitude, location.longitude)),
-                        title = location.title,
-                        snippet = location.snippet,
+                        title = location.nama,
+                        snippet = location.nama,
                         icon = BitmapDescriptorFactory.fromBitmap(iconIkan)
                     )
                 }
@@ -147,8 +146,8 @@ fun MapsScreen(
 //                        colors = TextFieldColors(M),
                         onValueChange = { newText ->
                             if (newText.endsWith("\n")) {
-                                matchingLocations = locationList.filter {
-                                    it.title.contains(searchQuery.trim(), ignoreCase = true)
+                                matchingLocations = fishes.filter {
+                                    it.nama?.contains(searchQuery.trim(), ignoreCase = true) == true
                                 }
                                 currentIndex = 0
 
@@ -173,8 +172,8 @@ fun MapsScreen(
 
                     Button(
                         onClick = {
-                            matchingLocations = locationList.filter {
-                                it.title.contains(searchQuery, ignoreCase = true)
+                            matchingLocations = fishes.filter {
+                                it.nama?.contains(searchQuery, ignoreCase = true) == true
                             }
                             currentIndex = 0
 
@@ -261,7 +260,7 @@ fun MapsScreen(
     }
 }
 
-private fun moveToLocation(location: FishLocation, cameraPositionState: CameraPositionState) {
+private fun moveToLocation(location: Fish, cameraPositionState: CameraPositionState) {
     cameraPositionState.move(
         CameraUpdateFactory.newLatLngZoom(
             LatLng(location.latitude, location.longitude),

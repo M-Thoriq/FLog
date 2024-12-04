@@ -63,6 +63,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.thoriq.flog.data.BottomBarItemData
 import com.thoriq.flog.data.Fish
+import com.thoriq.flog.data.Lokasi
 import com.thoriq.flog.data.Screen
 import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
@@ -84,14 +85,15 @@ class MainActivity : ComponentActivity() {
 
     private val weatherRepository = WeatherRepository(this)
     private var currentScreen by mutableStateOf("Home")
-    val fishdata =
-        "[{'title':'Salmon','snippet':'Fish 1','latitude':3.885,'longitude':98.6656},{'title':'salmon','snippet':'Fish 2','latitude':3.5839,'longitude':98.67},{'title':'ikan salmon','snippet':'Fish 2','latitude':3.5877,'longitude':98.66},{'title':'hiu','snippet':'Fish 2','latitude':3.5739,'longitude':98.57},{'title':'hiu','snippet':'Fish 2','latitude':3.5849,'longitude':98.77}]"
     private lateinit var fishViewModel: FishViewModel
     private lateinit var weatherViewModel: WeatherViewModel
     val latitude: Double
         get() = WeatherRepository.latitude
     val longitude: Double
         get() = WeatherRepository.longitude
+
+    val lokasi : Lokasi
+        get() = weatherRepository.getLatLong()
 
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -100,7 +102,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var hasLocationPermission by remember { mutableStateOf(false) }
-            var login by remember { mutableStateOf(true) }
+            var login by remember { mutableStateOf(false) }
             val context = LocalContext.current
             var name by remember { mutableStateOf("") }
 
@@ -215,7 +217,7 @@ class MainActivity : ComponentActivity() {
                             isSheetEdited = false
                         },
                     ) {
-                        val lokasi = WeatherRepository(this@MainActivity).getLatLong()
+
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -385,10 +387,13 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable(Screen.Maps.route) {
                                     topBarTitle = "Maps"
+                                    val fishes = fishViewModel.getAllFish()
+                                        .collectAsState(initial = emptyList()).value
                                     MapsScreen(
                                         latitude = WeatherRepository.latitude,
                                         longitude = WeatherRepository.longitude,
-                                        jsonData = fishdata
+                                        fishes = fishes,
+                                        lokasi = lokasi
                                     )
                                 }
                                 composable(Screen.Account.route) {
