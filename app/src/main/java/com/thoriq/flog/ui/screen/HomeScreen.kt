@@ -196,7 +196,7 @@ fun WeatherCard(
             contentDescription = "",
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
-                .size(362.dp)
+                .size(374.dp)
 
         )
         Column(

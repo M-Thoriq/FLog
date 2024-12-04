@@ -42,6 +42,7 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -50,11 +51,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 
 @Composable
 fun CameraScreen(
@@ -119,16 +127,41 @@ fun CameraScreen(
             cameraLauncher.launch(uri) // Launch the camera to take a picture
         }
     }
-    Column(
+    Row(
         modifier = Modifier
-            .padding(vertical = 36.dp)
+            .padding(24.dp)
+            .padding(top = 16.dp)
     ) {
-        Text("WOIII")
+//        Column {
+//            Icon(
+//                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                contentDescription = "",
+//            )
+//        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .padding(start = 16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = "",
+
+                )
+            Text("Fish Info",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+
+                )
+        }
+
+
+
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Box(
         modifier = Modifier
-            .padding(top = 48.dp)
+            .padding(top = 12.dp)
             .verticalScroll(rememberScrollState())
     ) {
         // Display the captured image immediately after it's taken
@@ -141,11 +174,14 @@ fun CameraScreen(
             }
 
             ImageInterpretationUiState.Loading -> {
-                Box(
-                    contentAlignment = Alignment.Center,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                     modifier = Modifier
+                        .padding(top = 390.dp)
+                        .fillMaxSize()
                         .padding(8.dp)
-                        .align(Alignment.CenterHorizontally)
+
                 ) {
                     CircularProgressIndicator(color = Color(0XFF02D2A8))
                 }
@@ -156,40 +192,46 @@ fun CameraScreen(
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    if (captureSuccess.value) {
+                        imageUri.value?.let { uri ->
+                            // AsyncImage centered and overlapping the top of the Card
+                            AsyncImage(
+                                model = uri,
 
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .zIndex(100.0f)
+                                    .padding(top = 100.dp)
+                                    .size(160.dp)
+                                    .align(Alignment.TopCenter) // Center horizontally within the Card
+                                    .offset(y = 16.dp) // Move up to overlap the Card
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    } else {
+                        Text(
+                            "No image captured yet",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                     Card(
                         modifier = Modifier
-                            .padding(top = 128.dp)
-                            .fillMaxWidth()
-                            .height(2800.dp),
+                            .padding(top = 180.dp)
+                            .padding(horizontal = 16.dp)
+                                .fillMaxWidth()
+                            .height(300.dp),
                         shape = MaterialTheme.shapes.large,
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) {
                         Box {
-                            if (captureSuccess.value) {
-                                imageUri.value?.let { uri ->
-                                    // AsyncImage centered and overlapping the top of the Card
-                                    AsyncImage(
-                                        model = uri,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(160.dp)
-                                            .align(Alignment.TopCenter) // Center horizontally within the Card
-                                            .offset(y = -80.dp) // Move up to overlap the Card
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-                            } else {
-                                Text(
-                                    "No image captured yet",
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
+
 
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
-                                    .padding(top = 100.dp) // Adjust padding to avoid overlapping AsyncImage
+                                    .padding(top = 192.dp)
+                                    .padding(horizontal = 16.dp)// Adjust padding to avoid overlapping AsyncImage
                                     .fillMaxSize()
                             ) {
                                 Text(
