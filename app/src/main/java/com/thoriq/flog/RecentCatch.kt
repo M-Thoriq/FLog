@@ -29,9 +29,9 @@ fun RecentCatchItem(recentCatch: RecentCatch) {
             .width(256.dp)
             .padding(7.5.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.primaryContainer)
     ) {
-        Icon(painter = painterResource(id = R.drawable.ic_flog), contentDescription = "", tint = MaterialTheme.colorScheme.onSecondary)
+        Icon(painter = painterResource(id = R.drawable.ic_flog), contentDescription = "", tint = MaterialTheme.colorScheme.primary)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier

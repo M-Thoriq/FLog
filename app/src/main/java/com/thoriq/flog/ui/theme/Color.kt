@@ -1,6 +1,6 @@
 package com.thoriq.flog.ui.theme
 import androidx.compose.ui.graphics.Color
-
+val blueTransparent = Color(0xFF94CDF6)
 val primaryLight = Color(0xFF3AA2DC)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFC8E6FF)
