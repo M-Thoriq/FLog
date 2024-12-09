@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
-import com.loopj.android.http.AsyncHttpClient.log
 import com.thoriq.flog.config.ImageInterpretationUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +24,9 @@ class ImageInterpretationViewModel(
 
     var fish: String = ""
     var description: String = ""
+    var avgWeight: String = ""
+    var avgLength: String = ""
+    var avgPrice: String = ""
 
     fun reason(
         userInput: String,
@@ -37,13 +39,19 @@ class ImageInterpretationViewModel(
         Please return the data in JSON format with the following fields:
         
         - name: A descriptive name for the identified object or concept.
-        - short_description: A brief summary of the identified object or concept.
+        - short_description: A brief summary of the identified object or concept, minimal 4 text.
+        - avg_weight: The average weight of the identified object or concept in grams (only numbers, spaces, "-" and "gr").
+        - avg_length: The average length of the identified object or concept in centimeters (only numbers, spaces, "-" and "cm").
+        - avg_price: The average price of the identified object or concept in the market in Indonesian Rupiahs (only numbers, ".", spaces, "-" and "Rp." at the beginning).
         
         Make sure the JSON structure is clean and easy to parse. Here is the expected output format:
         
         {
             "name": "string",
             "short_description": "string",
+            "avg_weight": "string",
+            "avg_length": "string",
+            "avg_price": "string"
         }
         
         if its not a fish, then return the following:
@@ -73,7 +81,7 @@ class ImageInterpretationViewModel(
                         outputContent += response.text
                     }
                 parseJsonAndAssignVariables(outputContent)
-                _uiState.value = ImageInterpretationUiState.Success(fish, description)
+                _uiState.value = ImageInterpretationUiState.Success(fish, description, avgWeight, avgLength, avgPrice)
             } catch (e: Exception) {
                 _uiState.value = ImageInterpretationUiState.Error(e.localizedMessage ?: "")
             }
@@ -92,6 +100,9 @@ class ImageInterpretationViewModel(
             // Extract the name and short_description from the JSON
             fish = jsonObject.optString("name", "Unknown")
             description = jsonObject.optString("short_description", "No description available")
+            avgWeight = jsonObject.optString("avg_weight", "Unknown")
+            avgLength = jsonObject.optString("avg_length", "Unknown")
+            avgPrice = jsonObject.optString("avg_price", "Unknown")
 
             // Optionally, you can also extract the image link if you need it
 

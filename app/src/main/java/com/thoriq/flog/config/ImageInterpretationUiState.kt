@@ -18,7 +18,13 @@ sealed interface ImageInterpretationUiState {
     /**
      * Generated text
      */
-    data class Success(val fish: String, val description: String) : ImageInterpretationUiState
+    data class Success(
+        val fish: String,
+        val description: String,
+        val avgWeight: String,
+        val avgLength: String,
+        val avgPrice: String
+    ) : ImageInterpretationUiState
 
     /**
      * Error state when an error occurs

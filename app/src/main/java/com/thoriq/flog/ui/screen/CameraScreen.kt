@@ -41,6 +41,7 @@ import android.content.ContentValues
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,14 +49,20 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Payments
+import androidx.compose.material.icons.filled.Scale
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
@@ -147,7 +154,7 @@ fun CameraScreen(
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = "",
-
+                tint = MaterialTheme.colorScheme.primary,
                 )
             Text("Fish Info",
                 style = MaterialTheme.typography.headlineLarge,
@@ -180,6 +187,7 @@ fun CameraScreen(
                     modifier = Modifier
                         .padding(top = 390.dp)
                         .fillMaxSize()
+                        .fillMaxHeight()
                         .padding(8.dp)
 
                 ) {
@@ -190,7 +198,9 @@ fun CameraScreen(
             is ImageInterpretationUiState.Success -> {
                 onImageIdentified((imageInterpretationUiState as ImageInterpretationUiState.Success).fish)
                 Box(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .fillMaxHeight()
                 ) {
                     if (captureSuccess.value) {
                         imageUri.value?.let { uri ->
@@ -202,9 +212,9 @@ fun CameraScreen(
                                 modifier = Modifier
                                     .zIndex(100.0f)
                                     .padding(top = 100.dp)
-                                    .size(180.dp)
+                                    .size(210.dp)
                                     .align(Alignment.TopCenter) // Center horizontally within the Card
-                                    .offset(y = 16.dp) // Move up to overlap the Card
+                                    .offset(y = 44.dp) // Move up to overlap the Card
                                     .clip(CircleShape),
                                 contentScale = ContentScale.Crop
                             )
@@ -217,39 +227,120 @@ fun CameraScreen(
                     }
                     Card(
                         modifier = Modifier
-                            .padding(top = 180.dp)
-                            .padding(horizontal = 16.dp)
-                                .fillMaxWidth(),
+                            .padding(top = 240.dp, bottom = 12.dp)
+                            .heightIn( 540.dp)
 
-                        shape = MaterialTheme.shapes.large,
+                            .fillMaxWidth(),
+
+                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                     ) {
-                        Box {
+                        Box{
 
 
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
-                                    .padding(top = 145.dp, bottom = 16.dp)
+                                    .padding(top = 160.dp, bottom = 16.dp)
                                     .padding(horizontal = 32.dp)// Adjust padding to avoid overlapping AsyncImage
                                     .fillMaxSize()
                             ) {
                                 Text(
                                     text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish,
                                     color = Color(0xFF000000),
-                                    fontSize = 20.sp,
+                                    fontSize = 32.sp,
                                     fontWeight = FontWeight.Bold,
                                 )
 
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(12.dp))
 
                                 Text(
                                     text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description,
                                     color = Color(0xFF000000),
-                                    fontSize = 16.sp,
+                                    fontSize = 18.sp,
                                     fontWeight = FontWeight.Normal,
                                     modifier = Modifier.fillMaxWidth()
                                 )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+                                if((imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight != "Null"){
+                                    Column {
+                                        Row {
+                                            Column {
+                                                Row {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Scale,
+                                                        contentDescription = "",
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                        modifier = Modifier.size(16.dp)
+                                                    )
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .width(1.dp) // Set the divider's width
+                                                            .fillMaxHeight() // Stretch it vertically
+                                                            .background(Color.Gray) // Set the divider's color
+                                                    )
+
+                                                    Text(
+                                                        text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight,
+                                                        color = Color(0xFF000000),
+                                                        fontSize = 12.sp,
+                                                        fontWeight = FontWeight.Medium,
+                                                    )
+                                                }
+
+                                            }
+                                            Column {
+                                                Row {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Straighten,
+                                                        contentDescription = "",
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                        modifier = Modifier.size(16.dp)
+                                                    )
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .width(1.dp) // Set the divider's width
+                                                            .fillMaxHeight() // Stretch it vertically
+                                                            .background(Color.Gray) // Set the divider's color
+                                                    )
+
+                                                    Text(
+                                                        text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgLength,
+                                                        color = Color(0xFF000000),
+                                                        fontSize = 12.sp,
+                                                        fontWeight = FontWeight.Medium,
+                                                    )
+                                                }
+
+                                            }
+
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Row {
+                                            Icon(
+                                                imageVector = Icons.Default.Payments,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                            Text(
+                                                text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgPrice,
+                                                color = Color(0xFF000000),
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.Medium,
+                                            )
+                                        }
+
+
+
+                                    }
+
+                            }
+
+
+
+
                             }
                         }
                     }
