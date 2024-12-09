@@ -191,7 +191,7 @@ fun WeatherCard(
             .padding(16.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.hd_wallpaper_rainy_forest_forest_green_nature_new_rain_road_thumbnail),
+            painter = painterResource(id = R.drawable.hd_wallpaper_rainy_forest_forest_green_nature_new_rain_road_thumbnail2),
             contentDescription = "",
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
