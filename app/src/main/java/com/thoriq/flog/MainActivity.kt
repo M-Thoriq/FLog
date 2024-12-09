@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var hasLocationPermission by remember { mutableStateOf(false) }
-            var login by remember { mutableStateOf(true) }
+            var login by remember { mutableStateOf(false) }
             val context = LocalContext.current
             var name by remember { mutableStateOf("") }
 
