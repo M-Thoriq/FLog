@@ -1,6 +1,7 @@
 package com.thoriq.flog
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -123,6 +124,13 @@ class MainActivity : ComponentActivity() {
                     requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 } else {
                     hasLocationPermission = true
+                }
+                if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(android.Manifest.permission.CAMERA),
+                        0
+                    )
                 }
                 weatherRepository.fetchWeatherData(context) { weatherList ->
                     weathers.value = weatherList
