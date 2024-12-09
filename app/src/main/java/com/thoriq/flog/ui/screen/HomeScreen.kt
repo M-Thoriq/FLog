@@ -47,9 +47,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
 import com.thoriq.flog.RecentCatchItem
 import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
+import com.thoriq.flog.ui.theme.blueTransparent
 import com.thoriq.flog.viewModel.WeatherViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -158,7 +160,7 @@ fun GreetingSection(modifier: Modifier = Modifier) {
     ) {
         Box(modifier = Modifier.padding(8.dp)) {
             Image(
-                painter = painterResource(id = R.drawable.akun), contentDescription = "Image Akun",
+                painter = painterResource(id = R.drawable._3f1eda09c78fa01cb765443993748ee), contentDescription = "Image Akun",
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
@@ -169,7 +171,7 @@ fun GreetingSection(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 15.dp)
         ) {
-            Text(text = "Welcome!!", fontSize = 24.sp)
+            Text(text = "Welcome!", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
             Text(text = "Have a nice day!")
         }
     }
@@ -195,7 +197,7 @@ fun WeatherCard(
             contentDescription = "",
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
-                .size(362.dp)
+                .size(374.dp)
 
         )
         Column(
@@ -211,7 +213,7 @@ fun WeatherCard(
 
                 ,
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+                colors = CardDefaults.cardColors(containerColor = blueTransparent),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Row(
@@ -300,11 +302,11 @@ fun RecentCatch(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = "View All >",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Blue
-        )
+//        Text(
+//            text = "View All >",
+//            style = MaterialTheme.typography.bodySmall,
+//            color = Color.Blue
+//        )
     }
     val recentCatch = com.thoriq.flog.repository.RecentCatchRepository()
     val getAllData = recentCatch.getAllData()
