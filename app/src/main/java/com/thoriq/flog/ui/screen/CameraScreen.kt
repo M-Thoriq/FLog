@@ -73,8 +73,7 @@ import androidx.compose.ui.zIndex
 
 @Composable
 fun CameraScreen(
-    question: String,
-    onImageIdentified: (String) -> Unit, // Callback with the identified text
+    question: String, onImageIdentified: (String) -> Unit, // Callback with the identified text
     viewModel: ImageInterpretationViewModel = viewModel(factory = GeminiModel)
 ) {
     val imageInterpretationUiState by viewModel.uiState.collectAsState()
@@ -90,19 +89,15 @@ fun CameraScreen(
 
     // Prepare the image Uri where the camera will save the captured image
     val contentResolver = context.contentResolver
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = TakePicture(),
-        onResult = { success ->
+    val cameraLauncher =
+        rememberLauncherForActivityResult(contract = TakePicture(), onResult = { success ->
             captureSuccess.value = success
             if (success) {
                 imageUri.value?.let { uri ->
                     coroutineScope.launch {
                         val bitmap = imageUri.value?.let { currentUri ->
-                            val imageRequest = imageRequestBuilder
-                                .data(currentUri)
-                                .size(768)
-                                .precision(Precision.EXACT)
-                                .build()
+                            val imageRequest = imageRequestBuilder.data(currentUri).size(768)
+                                .precision(Precision.EXACT).build()
                             try {
                                 val result = imageLoader.execute(imageRequest)
                                 if (result is SuccessResult) {
@@ -120,16 +115,19 @@ fun CameraScreen(
             } else {
                 Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
             }
-        }
-    )
+        })
 
     // Automatically launch the camera when the screen is loaded
     LaunchedEffect(Unit) {
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.DISPLAY_NAME, "captured_image_${System.currentTimeMillis()}.jpg")
+            put(
+                MediaStore.Images.Media.DISPLAY_NAME,
+                "captured_image_${System.currentTimeMillis()}.jpg"
+            )
         }
-        imageUri.value = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        imageUri.value =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         imageUri.value?.let { uri ->
             cameraLauncher.launch(uri) // Launch the camera to take a picture
         }
@@ -148,21 +146,20 @@ fun CameraScreen(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier
-                .padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.primary,
-                )
-            Text("Fish Info",
+            )
+            Text(
+                "Fish Info",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
 
                 )
         }
-
 
 
     }
@@ -221,21 +218,20 @@ fun CameraScreen(
                         }
                     } else {
                         Text(
-                            "No image captured yet",
-                            modifier = Modifier.align(Alignment.Center)
+                            "No image captured yet", modifier = Modifier.align(Alignment.Center)
                         )
                     }
                     Card(
                         modifier = Modifier
                             .padding(top = 240.dp, bottom = 12.dp)
-                            .heightIn( 540.dp)
+                            .heightIn(540.dp)
 
                             .fillMaxWidth(),
 
                         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                     ) {
-                        Box{
+                        Box {
 
 
                             Column(
@@ -262,83 +258,85 @@ fun CameraScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 )
 
-                                Spacer(modifier = Modifier.height(12.dp))
-                                if((imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight != "Null"){
-                                    Column {
+                                if ((imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight != "Null") {
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
                                         Row {
-                                            Column {
-                                                Row {
+                                            Column(
+                                                modifier = Modifier.padding(end = 48.dp)
+                                            ) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                ) {
                                                     Icon(
                                                         imageVector = Icons.Default.Scale,
                                                         contentDescription = "",
                                                         tint = MaterialTheme.colorScheme.primary,
-                                                        modifier = Modifier.size(16.dp)
+                                                        modifier = Modifier.size(24.dp)
                                                     )
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .width(1.dp) // Set the divider's width
-                                                            .fillMaxHeight() // Stretch it vertically
-                                                            .background(Color.Gray) // Set the divider's color
-                                                    )
+
 
                                                     Text(
                                                         text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight,
                                                         color = Color(0xFF000000),
-                                                        fontSize = 12.sp,
+                                                        fontSize = 16.sp,
                                                         fontWeight = FontWeight.Medium,
+                                                        modifier = Modifier.padding(start = 12.dp)
                                                     )
                                                 }
 
                                             }
                                             Column {
-                                                Row {
+                                                Row(
+                                                    horizontalArrangement = Arrangement.SpaceAround,
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    modifier = Modifier.padding(start = 48.dp)
+                                                ) {
                                                     Icon(
                                                         imageVector = Icons.Default.Straighten,
                                                         contentDescription = "",
                                                         tint = MaterialTheme.colorScheme.primary,
-                                                        modifier = Modifier.size(16.dp)
+                                                        modifier = Modifier.size(24.dp)
                                                     )
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .width(1.dp) // Set the divider's width
-                                                            .fillMaxHeight() // Stretch it vertically
-                                                            .background(Color.Gray) // Set the divider's color
-                                                    )
+
 
                                                     Text(
                                                         text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgLength,
                                                         color = Color(0xFF000000),
-                                                        fontSize = 12.sp,
+                                                        fontSize = 16.sp,
                                                         fontWeight = FontWeight.Medium,
+                                                        modifier = Modifier.padding(start = 12.dp)
                                                     )
                                                 }
 
                                             }
 
                                         }
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Row {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
                                             Icon(
                                                 imageVector = Icons.Default.Payments,
                                                 contentDescription = "",
                                                 tint = MaterialTheme.colorScheme.primary,
-                                                modifier = Modifier.size(16.dp)
+                                                modifier = Modifier.size(24.dp)
                                             )
                                             Text(
                                                 text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgPrice,
                                                 color = Color(0xFF000000),
-                                                fontSize = 12.sp,
+                                                fontSize = 16.sp,
                                                 fontWeight = FontWeight.Medium,
+                                                modifier = Modifier.padding(start = 12.dp)
                                             )
                                         }
 
 
-
                                     }
 
-                            }
-
-
+                                }
 
 
                             }
