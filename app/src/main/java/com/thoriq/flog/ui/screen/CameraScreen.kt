@@ -35,8 +35,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.asImageBitmap
@@ -56,6 +58,10 @@ fun CameraScreen(
     viewModel: ImageInterpretationViewModel = viewModel(factory = GeminiModel)
 )
 
+
+
+//ini camera yang makek place holder.jdi gk exhaust lagi 50 request per day nya
+//klok mau ganti ke camera yang ada ai nya, ctrl+f "camera 2" abistu uncomment.abistu yg dibawah ini comment
 {
     //make a cameraX
     val imageInterpretationUiState by viewModel.uiState.collectAsState()
@@ -151,19 +157,7 @@ fun CameraScreen(
 
         // Show the captured image in a Card after it is captured
         capturedImageBitmap?.let { bitmap ->
-            Log.d("bitmap", bitmap.toString())
-            // Check the state safely before accessing it
-            when (val state = imageInterpretationUiState) {
-                is ImageInterpretationUiState.Loading -> {
-                    // Handle loading state if necessary, maybe show a loading spinner
-                    Log.d("loadings", bitmap.toString())
-
-                }
-                is ImageInterpretationUiState.Success -> {
                     // Trigger the callback with the fish result (only if Success)
-                    Log.d("suksed", bitmap.toString())
-
-                    onImageIdentified(state.fish)
 
                     // Show the image in the card
                     Card(
@@ -171,6 +165,11 @@ fun CameraScreen(
                             .align(Alignment.BottomCenter)
                             .padding(16.dp)
                     ) {
+
+
+
+
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -194,43 +193,79 @@ fun CameraScreen(
                             ) {
                                 // Name text
                                 Text(
-                                    text = state.fish, // Using `fish` from Success
+                                    text = "Ibra Segs", // Using `fish` from Success
                                     modifier = Modifier.padding(bottom = 4.dp)
                                 )
                                 // Description text
                                 Text(
-                                    text = "Description", // You can replace this with actual description data
+                                    text = "Description lorem ipsum dolor apa sih lupa panjangnya", // You can replace this with actual description data
+                                )
+                            }
+                            IconButton(
+                                onClick = {
+                                    capturedImageBitmap=null
+                                },
+                                modifier = Modifier// Position it at the top-right corner
+                                    .padding(8.dp) // Padding around the button
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Close"
                                 )
                             }
                         }
-                    }
-                }
-                is ImageInterpretationUiState.Error -> {
-                    Log.d("errors", bitmap.toString())
-                    Log.d("error", (state as ImageInterpretationUiState.Error).errorMessage)
-                    Card(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = (state as ImageInterpretationUiState.Error).errorMessage,
-                            modifier = Modifier.padding(16.dp)
-                        )
 
                     }
                 }
-
-                ImageInterpretationUiState.Initial -> TODO()
-            }
         }
     }
-}
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//camera 1
 
 //{
 //    val imageInterpretationUiState by viewModel.uiState.collectAsState()
@@ -442,3 +477,212 @@ fun CameraScreen(
 //}
 
 
+
+
+
+
+
+
+
+//camera 2
+
+//{
+//    //make a cameraX
+//    val imageInterpretationUiState by viewModel.uiState.collectAsState()
+//    val context = LocalContext.current
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//
+//    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+//
+//    var imageCapture: ImageCapture? by remember { mutableStateOf(null) }
+//    var capturedImageBitmap: Bitmap? by remember { mutableStateOf(null) } // Store the captured image
+//
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        val previewView = remember { PreviewView(context) }
+//
+//        AndroidView(
+//            factory = { previewView },
+//            modifier = Modifier.fillMaxSize()
+//        ) { previewViewRef ->
+//            cameraProviderFuture.addListener({
+//                val cameraProvider = cameraProviderFuture.get()
+//
+//                val preview = Preview.Builder().build().also {
+//                    it.setSurfaceProvider(previewViewRef.surfaceProvider)
+//                }
+//
+//                imageCapture = ImageCapture.Builder().build()
+//
+//                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//
+//                try {
+//                    cameraProvider.unbindAll()
+//                    cameraProvider.bindToLifecycle(
+//                        lifecycleOwner,
+//                        cameraSelector,
+//                        preview,
+//                        imageCapture
+//                    )
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//            }, ContextCompat.getMainExecutor(context))
+//        }
+//
+//        FloatingActionButton(
+//            onClick = {
+//                val photoFile = File(
+//                    context.cacheDir,
+//                    "${System.currentTimeMillis()}.jpg"
+//                )
+//
+//                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+//
+//                imageCapture?.takePicture(
+//                    outputOptions,
+//                    ContextCompat.getMainExecutor(context),
+//                    object : ImageCapture.OnImageSavedCallback {
+//                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+//                            // Load the image as Bitmap after capture
+//                            val bitmap = BitmapFactory.decodeFile(photoFile.path)
+//
+//                            if (bitmap != null) {
+//                                capturedImageBitmap = bitmap // Save the captured image
+//                                // Call reason with valid bitmap
+//                                viewModel.reason(question, listOf(capturedImageBitmap))
+//                            } else {
+//                                // Handle the error case where the bitmap is null
+//                                Log.e("CameraCapture", "Failed to decode bitmap")
+//                            }
+//
+//                        }
+//
+//                        override fun onError(exception: ImageCaptureException) {
+//                            exception.printStackTrace()
+//                        }
+//                    }
+//                )
+//            },
+//            modifier = Modifier
+//                .align(Alignment.BottomCenter)
+//                .padding(16.dp)
+//        ) {
+//            Icon(imageVector = Icons.Default.Camera, contentDescription = "Take Picture")
+//        }
+//
+//        Text(
+//            text = question,
+//            modifier = Modifier
+//                .align(Alignment.TopCenter)
+//                .background(Color.Black.copy(alpha = 0.7f))
+//                .padding(8.dp),
+//            color = Color.White
+//        )
+//
+//        // Show the captured image in a Card after it is captured
+//        capturedImageBitmap?.let { bitmap ->
+//            Log.d("bitmap", bitmap.toString())
+//            // Check the state safely before accessing it
+//            when (val state = imageInterpretationUiState) {
+//                is ImageInterpretationUiState.Loading -> {
+//                    // Handle loading state if necessary, maybe show a loading spinner
+//                    Log.d("loadings", bitmap.toString())
+//
+//                }
+//                is ImageInterpretationUiState.Success -> {
+//                    // Trigger the callback with the fish result (only if Success)
+//                    Log.d("suksed", bitmap.toString())
+//
+//                    onImageIdentified(state.fish)
+//
+//                    // Show the image in the card
+//                    Card(
+//                        modifier = Modifier
+//                            .align(Alignment.BottomCenter)
+//                            .padding(16.dp)
+//                    ) {
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(16.dp), // Padding around the Row
+//                            verticalAlignment = Alignment.CenterVertically // Align vertically in the center
+//                        ) {
+//                            // Image on the left
+//                            Image(
+//                                bitmap = bitmap.asImageBitmap(),
+//                                contentDescription = "Captured Image",
+//                                modifier = Modifier
+//                                    .size(100.dp) // Adjust the size of the image
+//                                    .padding(end = 16.dp), // Padding between image and text
+//                                contentScale = ContentScale.Crop
+//                            )
+//
+//                            // Column for Name and Description on the right
+//                            Column(
+//                                modifier = Modifier
+//                                    .weight(1f) // Take up remaining space
+//                            ) {
+//                                // Name text
+//                                Text(
+//                                    text = state.fish, // Using `fish` from Success
+//                                    modifier = Modifier.padding(bottom = 4.dp)
+//                                )
+//                                // Description text
+//                                Text(
+//                                    text = "Description", // You can replace this with actual description data
+//                                )
+//                            }
+//                            IconButton(
+//                                onClick = {
+//                                    capturedImageBitmap=null
+//                                },
+//                                modifier = Modifier// Position it at the top-right corner
+//                                .padding(8.dp) // Padding around the button
+//                                )
+//                            {
+//                                    Icon(
+//                                        imageVector = Icons.Default.Close,
+//                                        contentDescription = "Close"
+//                                    )
+//                            }
+//                        }
+//                    }
+//                }
+//                is ImageInterpretationUiState.Error -> {
+//                    Log.d("errors", bitmap.toString())
+//                    Log.d("error", (state as ImageInterpretationUiState.Error).errorMessage)
+//                    Card(
+//                        modifier = Modifier
+//                            .align(Alignment.BottomCenter)
+//                            .padding(16.dp)
+//                    ) {
+//
+//                        Row {
+//                            IconButton(
+//                                onClick = {
+//                                    capturedImageBitmap=null
+//                                },
+//                                modifier = Modifier// Position it at the top-right corner
+//                                    .padding(8.dp) // Padding around the button
+//                            )
+//                            {
+//                                Icon(
+//                                    imageVector = Icons.Default.Close,
+//                                    contentDescription = "Close"
+//                                )
+//                            }
+//                            Text(
+//                                text = (state as ImageInterpretationUiState.Error).errorMessage,
+//                                modifier = Modifier.padding(16.dp)
+//                            )
+//
+//                        }
+//
+//                    }
+//                }
+//
+//                ImageInterpretationUiState.Initial -> TODO()
+//            }
+//        }
+//    }
+//}
