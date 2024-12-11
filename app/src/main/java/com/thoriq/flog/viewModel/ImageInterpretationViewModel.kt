@@ -1,6 +1,7 @@
 package com.thoriq.flog.viewModel
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
@@ -30,7 +31,7 @@ class ImageInterpretationViewModel(
 
     fun reason(
         userInput: String,
-        selectedImages: List<Bitmap>
+        selectedImages: List<Bitmap?>
     ) {
         _uiState.value = ImageInterpretationUiState.Loading
         val prompt = """
@@ -69,7 +70,9 @@ class ImageInterpretationViewModel(
             try {
                 val inputContent = content {
                     for (bitmap in selectedImages) {
-                        image(bitmap)
+                        if (bitmap != null) {
+                            image(bitmap)
+                        }
                     }
                     text(prompt)
                 }
