@@ -41,9 +41,9 @@ class ImageInterpretationViewModel(
         
         - name: A descriptive name for the identified object or concept.
         - short_description: A brief summary of the identified object or concept.
-        - avg_weight: The average weight of the identified object or concept in grams (only numbers, spaces, "-" and "gr").
-        - avg_length: The average length of the identified object or concept in centimeters (only numbers, spaces, "-" and "cm").
-        - avg_price: The average price of the identified object or concept in the market in Indonesian Rupiahs (only numbers, ".", spaces, "-" and "Rp." at the beginning).
+        - avg_weight: The average weight of the identified object or concept in Kilograms (only numbers, spaces, "-" and "kg").
+        - avg_length: The average length of the identified object or concept in Meters (only numbers, spaces, "-" and "m").
+        - avg_price: The average price of the identified object or concept in the market in Indonesian Rupiahs (only numbers, ".", spaces, "-" and "Rp." at the beginning). if the price is not available, return "Unknown".
         
         Make sure the JSON structure is clean and easy to parse. Here is the expected output format:
         
