@@ -2,14 +2,8 @@ package com.thoriq.flog
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -85,34 +79,10 @@ import com.thoriq.flog.ui.theme.FlogTheme
 import com.thoriq.flog.viewModel.FishViewModel
 import com.thoriq.flog.viewModel.WeatherViewModel
 import com.thoriq.flog.viewModel.factory.ViewModelFactory
-import java.io.ByteArrayOutputStream
+
 
 
 class MainActivity : ComponentActivity() {
-
-    fun drawableToByteArray(context: Context?, resId: Int): ByteArray? {
-        if (context == null) return null
-        val bitmap = BitmapFactory.decodeResource(context.resources, resId)
-        if (bitmap == null) {
-            Log.e("MainActivity", "Failed to decode resource with ID: $resId")
-            return null
-        }
-        val stream = ByteArrayOutputStream()
-        val success = bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-        // Ensure the compression is successful
-        if (!success) {
-            Log.e("MainActivity", "Bitmap compression failed")
-            return null
-        }
-        return stream.toByteArray()
-    }
-
-    private lateinit var defaultImageByteArray: ByteArray
-    // In your Activity or Fragment
-
-
-
 
     private val weatherRepository = WeatherRepository(this)
     private var currentScreen by mutableStateOf("Home")
@@ -132,14 +102,9 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
-            val context = LocalContext.current
-            // Initialize defaultImageByteArray here after the context is available
-            defaultImageByteArray = drawableToByteArray(context, R.drawable.hd_bg) ?: ByteArray(0)
-
-
-            Log.d("MainActivity", "Default Image Byte Array: $defaultImageByteArray")
             var hasLocationPermission by remember { mutableStateOf(false) }
             var login by remember { mutableStateOf(false) }
+            val context = LocalContext.current
             var name by remember { mutableStateOf("") }
 
             val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -273,7 +238,6 @@ class MainActivity : ComponentActivity() {
 
                             val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
                                 initial = Fish(
-                                    image = null,
                                     nama = "",
                                     berat = 0.0,
                                     harga = 0.0,
@@ -337,7 +301,6 @@ class MainActivity : ComponentActivity() {
                             Button(modifier = Modifier.fillMaxWidth(),
                                 onClick = {
                                 val fish = Fish(
-                                    image = defaultImageByteArray,
                                     nama = namaIkan.text,
                                     berat = beratIkan.text.toDouble(),
                                     harga = hargaIkan.text.toDouble(),
