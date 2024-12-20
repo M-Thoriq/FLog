@@ -39,10 +39,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Close
@@ -64,6 +67,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.thoriq.flog.config.ImageInterpretationUiState
@@ -167,9 +171,10 @@ fun CameraScreen(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
                 .padding(
-                    bottom = 32
-                        .dp
+                    bottom = 32.dp
                 )
+                
+
         ) {
             Icon(imageVector = Icons.Default.Camera, contentDescription = "Take Picture")
         }
@@ -225,7 +230,9 @@ fun CameraScreen(
                                 contentDescription = "Captured Image",
                                 modifier = Modifier
                                     .size(100.dp) // Adjust the size of the image
-                                    .padding(end = 16.dp), // Padding between image and text
+                                    .padding(end = 16.dp)
+                                    , // Padding between image and text
+
                                 contentScale = ContentScale.Crop
                             )
 
@@ -299,7 +306,7 @@ fun CameraScreen(
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
                                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                                colors = CardDefaults.cardColors(Color.White)
                             ) {
 
 
@@ -325,6 +332,7 @@ fun CameraScreen(
                                     Image(
                                         bitmap = bitmap.asImageBitmap(),
                                         contentDescription = "Captured Image",
+                                        contentScale = ContentScale.Crop,
                                         modifier = Modifier
                                             .padding(top = 0.dp)
                                             .size(200.dp)
@@ -337,7 +345,7 @@ fun CameraScreen(
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     modifier = Modifier
-                                        .padding(top = 24.dp, bottom = 24.dp)
+                                        .padding(top = 24.dp, bottom = 32.dp)
                                         .padding(horizontal = 32.dp)// Adjust padding to avoid overlapping AsyncImage
                                         .fillMaxWidth()
                                 ) {
