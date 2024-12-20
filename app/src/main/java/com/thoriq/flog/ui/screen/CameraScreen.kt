@@ -28,44 +28,72 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Payments
+import androidx.compose.material.icons.filled.Scale
+import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.thoriq.flog.config.ImageInterpretationUiState
 import java.io.File
 
-@OptIn(ExperimentalPermissionsApi::class)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(
-    question: String,
-    onImageIdentified: (String) -> Unit, // Callback with the identified text
+    question: String, onImageIdentified: (String) -> Unit, // Callback with the identified text
     viewModel: ImageInterpretationViewModel = viewModel(factory = GeminiModel)
-)
-
-{
+) {
     //make a cameraX
     val imageInterpretationUiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-
+    var isBottomSheetVisible by remember { mutableStateOf(false) }
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-
     var imageCapture: ImageCapture? by remember { mutableStateOf(null) }
     var capturedImageBitmap: Bitmap? by remember { mutableStateOf(null) } // Store the captured image
+
+    var fishName: String = ""
+    var description: String = ""
+    var avgWeight: String = ""
+    var avgLength: String = ""
+    var avgPrice: String = ""
 
     Box(modifier = Modifier.fillMaxSize()) {
         val previewView = remember { PreviewView(context) }
@@ -99,6 +127,8 @@ fun CameraScreen(
             }, ContextCompat.getMainExecutor(context))
         }
 
+
+
         FloatingActionButton(
             onClick = {
                 val photoFile = File(
@@ -115,15 +145,19 @@ fun CameraScreen(
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                             // Load the image as Bitmap after capture
                             val bitmap = BitmapFactory.decodeFile(photoFile.path)
-
                             if (bitmap != null) {
                                 capturedImageBitmap = bitmap // Save the captured image
+
+                                // Create a non-null list of Bitmap
+                                val bitmapList = listOfNotNull(capturedImageBitmap)
+
                                 // Call reason with valid bitmap
-                                viewModel.reason(question, listOf(capturedImageBitmap))
+                                viewModel.reason(question, bitmapList)
                             } else {
                                 // Handle the error case where the bitmap is null
                                 Log.e("CameraCapture", "Failed to decode bitmap")
                             }
+
 
                         }
 
@@ -136,6 +170,11 @@ fun CameraScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
+                .padding(
+                    bottom = 32.dp
+                )
+                
+
         ) {
             Icon(imageVector = Icons.Default.Camera, contentDescription = "Take Picture")
         }
@@ -159,18 +198,26 @@ fun CameraScreen(
                     Log.d("loadings", bitmap.toString())
 
                 }
+
                 is ImageInterpretationUiState.Success -> {
                     // Trigger the callback with the fish result (only if Success)
                     Log.d("suksed", bitmap.toString())
 
                     onImageIdentified(state.fish)
+                    fishName = state.fish
+                    description = state.description
+                    avgWeight = state.avgWeight
+                    avgLength = state.avgLength
+                    avgPrice = state.avgPrice
 
-                    // Show the image in the card
+// Show the image in the card
                     Card(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(16.dp)
+                            .padding(bottom = 112.dp)
                     ) {
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -183,7 +230,9 @@ fun CameraScreen(
                                 contentDescription = "Captured Image",
                                 modifier = Modifier
                                     .size(100.dp) // Adjust the size of the image
-                                    .padding(end = 16.dp), // Padding between image and text
+                                    .padding(end = 16.dp)
+                                    , // Padding between image and text
+
                                 contentScale = ContentScale.Crop
                             )
 
@@ -194,17 +243,220 @@ fun CameraScreen(
                             ) {
                                 // Name text
                                 Text(
-                                    text = state.fish, // Using `fish` from Success
+                                    text = state.fish, // Using fish from Success
                                     modifier = Modifier.padding(bottom = 4.dp)
                                 )
                                 // Description text
-                                Text(
-                                    text = "Description", // You can replace this with actual description data
+
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    isBottomSheetVisible = true
+                                }, // Trigger the bottom sheet visibility
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = "Show Details"
+                                )
+                            }
+                            IconButton(
+                                onClick = {
+                                    capturedImageBitmap = null
+                                },
+                                modifier = Modifier// Position it at the top-right corner
+                                    .padding(8.dp) // Padding around the button
+                            )
+                            {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Close"
                                 )
                             }
                         }
                     }
+
+//                    if(isBottomSheetVisible){
+
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .background(Color.Transparent)
+//                                .verticalScroll(rememberScrollState())
+//                        ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Transparent),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        AnimatedVisibility(
+                            visible = isBottomSheetVisible,
+                            enter = slideInVertically(
+                                initialOffsetY = { it },
+                                animationSpec = (tween(durationMillis = 600))
+                            ),
+                            exit = slideOutVertically(
+                                targetOffsetY = { it },
+                                animationSpec = (tween(durationMillis = 600))
+                            )
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(),
+                                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                                colors = CardDefaults.cardColors(Color.White)
+                            ) {
+
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    IconButton(
+                                        onClick = { isBottomSheetVisible = false },
+                                        modifier = Modifier.padding(8.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Close"
+                                        )
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Image(
+                                        bitmap = bitmap.asImageBitmap(),
+                                        contentDescription = "Captured Image",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .padding(top = 0.dp)
+                                            .size(200.dp)
+                                            .clip(CircleShape)
+                                    )
+                                }
+
+
+
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .padding(top = 24.dp, bottom = 32.dp)
+                                        .padding(horizontal = 32.dp)// Adjust padding to avoid overlapping AsyncImage
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = fishName,
+                                        color = Color(0xFF000000),
+                                        fontSize = 32.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+
+                                    Spacer(modifier = Modifier.height(12.dp))
+
+                                    Text(
+                                        text = description,
+                                        color = Color(0xFF000000),
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+
+                                    if (avgWeight != "Unknown") {
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Row(
+                                                Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                ) {
+                                                Column{
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Scale,
+                                                            contentDescription = "",
+                                                            tint = MaterialTheme.colorScheme.primary,
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+
+
+                                                        Text(
+                                                            text = avgWeight,
+                                                            color = Color(0xFF000000),
+                                                            fontSize = 16.sp,
+                                                            fontWeight = FontWeight.Medium,
+                                                            modifier = Modifier.padding(start = 12.dp)
+                                                        )
+                                                    }
+
+                                                }
+                                                Column {
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Straighten,
+                                                            contentDescription = "",
+                                                            tint = MaterialTheme.colorScheme.primary,
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+
+
+                                                        Text(
+                                                            text = avgLength,
+                                                            color = Color(0xFF000000),
+                                                            fontSize = 16.sp,
+                                                            fontWeight = FontWeight.Medium,
+                                                            modifier = Modifier.padding(start = 12.dp)
+                                                        )
+                                                    }
+
+                                                }
+
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Payments,
+                                                    contentDescription = "",
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                                Text(
+                                                    text = avgPrice,
+                                                    color = Color(0xFF000000),
+                                                    fontSize = 16.sp,
+                                                    fontWeight = FontWeight.Medium,
+                                                    modifier = Modifier.padding(start = 12.dp)
+                                                )
+                                            }
+
+
+                                        }
+
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+
+
+//                        }
+//                    }
+
                 }
+
                 is ImageInterpretationUiState.Error -> {
                     Log.d("errors", bitmap.toString())
                     Log.d("error", (state as ImageInterpretationUiState.Error).errorMessage)
@@ -213,25 +465,40 @@ fun CameraScreen(
                             .align(Alignment.BottomCenter)
                             .padding(16.dp)
                     ) {
-                        Text(
-                            text = (state as ImageInterpretationUiState.Error).errorMessage,
-                            modifier = Modifier.padding(16.dp)
-                        )
+
+                        Row {
+                            IconButton(
+                                onClick = {
+                                    capturedImageBitmap = null
+                                },
+                                modifier = Modifier// Position it at the top-right corner
+                                    .padding(8.dp) // Padding around the button
+                            )
+                            {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Close"
+                                )
+                            }
+
+                            Text(
+                                text = (state as ImageInterpretationUiState.Error).errorMessage,
+                                modifier = Modifier.padding(16.dp)
+                            )
+
+                        }
 
                     }
+
                 }
 
                 ImageInterpretationUiState.Initial -> TODO()
             }
+
         }
+
     }
 }
-
-
-
-
-
-
 //{
 //    val imageInterpretationUiState by viewModel.uiState.collectAsState()
 //
@@ -246,19 +513,15 @@ fun CameraScreen(
 //
 //    // Prepare the image Uri where the camera will save the captured image
 //    val contentResolver = context.contentResolver
-//    val cameraLauncher = rememberLauncherForActivityResult(
-//        contract = TakePicture(),
-//        onResult = { success ->
+//    val cameraLauncher =
+//        rememberLauncherForActivityResult(contract = TakePicture(), onResult = { success ->
 //            captureSuccess.value = success
 //            if (success) {
 //                imageUri.value?.let { uri ->
 //                    coroutineScope.launch {
 //                        val bitmap = imageUri.value?.let { currentUri ->
-//                            val imageRequest = imageRequestBuilder
-//                                .data(currentUri)
-//                                .size(768)
-//                                .precision(Precision.EXACT)
-//                                .build()
+//                            val imageRequest = imageRequestBuilder.data(currentUri).size(768)
+//                                .precision(Precision.EXACT).build()
 //                            try {
 //                                val result = imageLoader.execute(imageRequest)
 //                                if (result is SuccessResult) {
@@ -276,16 +539,19 @@ fun CameraScreen(
 //            } else {
 //                Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
 //            }
-//        }
-//    )
+//        })
 //
 //    // Automatically launch the camera when the screen is loaded
 //    LaunchedEffect(Unit) {
 //        val values = ContentValues().apply {
 //            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-//            put(MediaStore.Images.Media.DISPLAY_NAME, "captured_image_${System.currentTimeMillis()}.jpg")
+//            put(
+//                MediaStore.Images.Media.DISPLAY_NAME,
+//                "captured_image_${System.currentTimeMillis()}.jpg"
+//            )
 //        }
-//        imageUri.value = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+//        imageUri.value =
+//            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 //        imageUri.value?.let { uri ->
 //            cameraLauncher.launch(uri) // Launch the camera to take a picture
 //        }
@@ -304,21 +570,20 @@ fun CameraScreen(
 //        Row(
 //            verticalAlignment = Alignment.CenterVertically,
 //            horizontalArrangement = Arrangement.spacedBy(12.dp),
-//            modifier = Modifier
-//                .padding(start = 16.dp)
+//            modifier = Modifier.padding(start = 16.dp)
 //        ) {
 //            Icon(
 //                imageVector = Icons.Default.Info,
 //                contentDescription = "",
-//
-//                )
-//            Text("Fish Info",
+//                tint = MaterialTheme.colorScheme.primary,
+//            )
+//            Text(
+//                "Fish Info",
 //                style = MaterialTheme.typography.headlineLarge,
 //                fontWeight = FontWeight.Bold,
 //
 //                )
 //        }
-//
 //
 //
 //    }
@@ -343,6 +608,7 @@ fun CameraScreen(
 //                    modifier = Modifier
 //                        .padding(top = 390.dp)
 //                        .fillMaxSize()
+//                        .fillMaxHeight()
 //                        .padding(8.dp)
 //
 //                ) {
@@ -353,7 +619,9 @@ fun CameraScreen(
 //            is ImageInterpretationUiState.Success -> {
 //                onImageIdentified((imageInterpretationUiState as ImageInterpretationUiState.Success).fish)
 //                Box(
-//                    modifier = Modifier.fillMaxSize()
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .fillMaxHeight()
 //                ) {
 //                    if (captureSuccess.value) {
 //                        imageUri.value?.let { uri ->
@@ -365,26 +633,26 @@ fun CameraScreen(
 //                                modifier = Modifier
 //                                    .zIndex(100.0f)
 //                                    .padding(top = 100.dp)
-//                                    .size(180.dp)
+//                                    .size(210.dp)
 //                                    .align(Alignment.TopCenter) // Center horizontally within the Card
-//                                    .offset(y = 16.dp) // Move up to overlap the Card
+//                                    .offset(y = 44.dp) // Move up to overlap the Card
 //                                    .clip(CircleShape),
 //                                contentScale = ContentScale.Crop
 //                            )
 //                        }
 //                    } else {
 //                        Text(
-//                            "No image captured yet",
-//                            modifier = Modifier.align(Alignment.Center)
+//                            "No image captured yet", modifier = Modifier.align(Alignment.Center)
 //                        )
 //                    }
 //                    Card(
 //                        modifier = Modifier
-//                            .padding(top = 180.dp)
-//                            .padding(horizontal = 16.dp)
-//                                .fillMaxWidth(),
+//                            .padding(top = 240.dp, bottom = 12.dp)
+//                            .heightIn(540.dp)
 //
-//                        shape = MaterialTheme.shapes.large,
+//                            .fillMaxWidth(),
+//
+//                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
 //                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 //                    ) {
 //                        Box {
@@ -393,26 +661,108 @@ fun CameraScreen(
 //                            Column(
 //                                horizontalAlignment = Alignment.CenterHorizontally,
 //                                modifier = Modifier
-//                                    .padding(top = 145.dp, bottom = 16.dp)
+//                                    .padding(top = 160.dp, bottom = 16.dp)
 //                                    .padding(horizontal = 32.dp)// Adjust padding to avoid overlapping AsyncImage
 //                                    .fillMaxSize()
 //                            ) {
 //                                Text(
 //                                    text = (imageInterpretationUiState as ImageInterpretationUiState.Success).fish,
 //                                    color = Color(0xFF000000),
-//                                    fontSize = 20.sp,
+//                                    fontSize = 32.sp,
 //                                    fontWeight = FontWeight.Bold,
 //                                )
 //
-//                                Spacer(modifier = Modifier.height(8.dp))
+//                                Spacer(modifier = Modifier.height(12.dp))
 //
 //                                Text(
 //                                    text = (imageInterpretationUiState as ImageInterpretationUiState.Success).description,
 //                                    color = Color(0xFF000000),
-//                                    fontSize = 16.sp,
+//                                    fontSize = 18.sp,
 //                                    fontWeight = FontWeight.Normal,
 //                                    modifier = Modifier.fillMaxWidth()
 //                                )
+//
+//                                if ((imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight != "Null") {
+//                                    Spacer(modifier = Modifier.height(24.dp))
+//                                    Column(
+//                                        horizontalAlignment = Alignment.CenterHorizontally
+//                                    ) {
+//                                        Row {
+//                                            Column(
+//                                                modifier = Modifier.padding(end = 48.dp)
+//                                            ) {
+//                                                Row(
+//                                                    verticalAlignment = Alignment.CenterVertically,
+//                                                ) {
+//                                                    Icon(
+//                                                        imageVector = Icons.Default.Scale,
+//                                                        contentDescription = "",
+//                                                        tint = MaterialTheme.colorScheme.primary,
+//                                                        modifier = Modifier.size(24.dp)
+//                                                    )
+//
+//
+//                                                    Text(
+//                                                        text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgWeight,
+//                                                        color = Color(0xFF000000),
+//                                                        fontSize = 16.sp,
+//                                                        fontWeight = FontWeight.Medium,
+//                                                        modifier = Modifier.padding(start = 12.dp)
+//                                                    )
+//                                                }
+//
+//                                            }
+//                                            Column {
+//                                                Row(
+//                                                    horizontalArrangement = Arrangement.SpaceAround,
+//                                                    verticalAlignment = Alignment.CenterVertically,
+//                                                    modifier = Modifier.padding(start = 48.dp)
+//                                                ) {
+//                                                    Icon(
+//                                                        imageVector = Icons.Default.Straighten,
+//                                                        contentDescription = "",
+//                                                        tint = MaterialTheme.colorScheme.primary,
+//                                                        modifier = Modifier.size(24.dp)
+//                                                    )
+//
+//
+//                                                    Text(
+//                                                        text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgLength,
+//                                                        color = Color(0xFF000000),
+//                                                        fontSize = 16.sp,
+//                                                        fontWeight = FontWeight.Medium,
+//                                                        modifier = Modifier.padding(start = 12.dp)
+//                                                    )
+//                                                }
+//
+//                                            }
+//
+//                                        }
+//                                        Spacer(modifier = Modifier.height(8.dp))
+//                                        Row(
+//                                            verticalAlignment = Alignment.CenterVertically
+//                                        ) {
+//                                            Icon(
+//                                                imageVector = Icons.Default.Payments,
+//                                                contentDescription = "",
+//                                                tint = MaterialTheme.colorScheme.primary,
+//                                                modifier = Modifier.size(24.dp)
+//                                            )
+//                                            Text(
+//                                                text = (imageInterpretationUiState as ImageInterpretationUiState.Success).avgPrice,
+//                                                color = Color(0xFF000000),
+//                                                fontSize = 16.sp,
+//                                                fontWeight = FontWeight.Medium,
+//                                                modifier = Modifier.padding(start = 12.dp)
+//                                            )
+//                                        }
+//
+//
+//                                    }
+//
+//                                }
+//
+//
 //                            }
 //                        }
 //                    }
