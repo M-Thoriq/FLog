@@ -3,19 +3,28 @@ package com.thoriq.flog.ui.screen
 import RegisterScreen
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -26,18 +35,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.thoriq.flog.R
 import com.thoriq.flog.repository.Login
 import com.thoriq.flog.repository.WeatherRepository
+import com.thoriq.flog.ui.theme.FlogTheme
 
 @Composable
 fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess: (Boolean,String) -> Unit) {
@@ -55,56 +72,101 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
     // Basic UI elements for the static login screen
 
 
-    Box {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xff001e2e)),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
         if(isLoggedIn){
-
             if (loggedInEmail != null) {
                 onLoginSuccess(true,loggedInEmail)
             }
         }
         else if (!regis) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopStart,
+            ) {
+                Image(painter = painterResource(id = R.drawable.flogwp), contentDescription = "", contentScale = ContentScale.Fit)
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                ){
+                    Image(painter = painterResource(id = R.drawable.ic_flog), contentDescription = "", modifier = Modifier.size(36.dp))
+                    Text(
+                        text = "Flog",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp,
+                            lineHeight = 32.sp,
+                            letterSpacing = 0.15.sp,
+                            color = Color(0xffffffff),
+                        ),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = regisMessage,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 32.dp)
-                )
-                Text(
-                    text = "Login",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 32.dp)
-                )
+                    .fillMaxWidth()
 
-                TextField(
+                    .background(
+                        Color(0xffffffff),
+                        RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+                    )
+                    .padding(horizontal = 36.dp, vertical = 52.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                // Login
+
+                Text(
+                    style =
+                    // Poppins / SemiBold
+                    TextStyle(
+                        fontWeight = FontWeight(600),
+                        fontSize = 36.sp,
+                        lineHeight = 16.sp,
+                    ),
+                    text = "Login",
+                    color = Color(0xff000000),
+                    textAlign = TextAlign.Center,
+                )
+                // Text field
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text("Email") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
+                    label = {
+                        Text(text = "Email")
+                    },
+                    placeholder = {
+                        Text(text = "example@flog.com")
+                    },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
 
-                TextField(
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Password") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
+                    label = {
+                        Text(text = "Password")
+                    },
+                    placeholder = {
+                        Text(text = "Your Password")
+                    },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 )
-
+                Text(
+                    text = loginStatus,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red
+                )
+                // Button
                 Button(
                     onClick = {
                         isLoading = true
@@ -131,25 +193,12 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
                     }
                 }
 
-                Text(
-                    text = loginStatus,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    color = Color.Red
-                )
-
-                Text(
-                    text = "Don't have an account? Sign up",
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .clickable {
+                Text(modifier = Modifier.offset(y = (-16).dp).clickable {
                             // Navigate to RegisterScreen directly when clicked
                             loginStatus = ""
                             regis = true // This will navigate to the Register screen
 
-                        }
-                )
+                        }, text = "Don't have an account? Sign up", color = MaterialTheme.colorScheme.secondary)
             }
         }
 
@@ -157,7 +206,10 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
             RegisterScreen(auth = auth){success,message->
                 if (success) {
                     regis = false
-                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
+                    if ((message != ""))
+                    {
+                        Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
+                    }
 
                 }
 
@@ -186,23 +238,3 @@ fun loginWithFirebase(
             }
         }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//@Preview
-//@Composable
-//private fun MapsPrev() {
-//    LoginScreen()
-//}
