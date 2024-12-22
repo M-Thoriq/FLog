@@ -118,7 +118,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
             var hasLocationPermission by remember { mutableStateOf(false) }
-            var login by remember { mutableStateOf(false) }
+            var login by remember { mutableStateOf(true) }
             val context = LocalContext.current
             var name by remember { mutableStateOf("") }
 
@@ -432,8 +432,13 @@ class MainActivity : ComponentActivity() {
                                 startDestination = Screen.Home.route
                             ) {
                                 composable(Screen.Home.route) {
+                                    val fishes = fishViewModel.getAllFish()
+                                        .collectAsState(initial = emptyList()).value
                                     topBarTitle = "Flog"
-                                    HomeScreen(weatherViewModel = weatherViewModel)
+                                    HomeScreen(
+                                        weatherViewModel = weatherViewModel,
+                                        fishes = fishes
+                                    )
                                 }
                                 composable(Screen.Fishes.route) {
                                     topBarTitle = "Fish"
