@@ -200,7 +200,7 @@ fun WeatherCard(
             .padding(16.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.hdwp),
+            painter = painterResource(id = R.drawable.hd_bg),
             contentDescription = "",
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
