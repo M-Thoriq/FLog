@@ -174,7 +174,7 @@ fun LoginScreen(auth: FirebaseAuth = FirebaseAuth.getInstance(), onLoginSuccess:
                             isLoading = false
                             if (success) {
                                 Login.saveLoginState(context, true, username)
-                                Toast.makeText(context,"Login SuckSeed", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context,"Login Success", Toast.LENGTH_SHORT).show()
                                 onLoginSuccess(true,username) // Notify the parent of success
                             } else {
                                 loginStatus = "Error: $message"

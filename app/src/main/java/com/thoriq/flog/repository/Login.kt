@@ -13,7 +13,7 @@ class Login() {
         val editor = sharedPreferences.edit()
         editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn)
         editor.putString(KEY_USER_EMAIL, email)
-        editor.apply()  // or editor.commit() if you want synchronous storage
+        editor.apply()
     }
 
     fun getLoginState(context: Context): Boolean {
