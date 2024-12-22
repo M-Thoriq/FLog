@@ -2,6 +2,7 @@ package com.thoriq.flog
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -118,7 +119,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
             var hasLocationPermission by remember { mutableStateOf(false) }
-            var login by remember { mutableStateOf(true) }
+            var login by remember { mutableStateOf(false) }
             val context = LocalContext.current
             var name by remember { mutableStateOf("") }
 
@@ -157,61 +158,61 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             val bottomBarItems = listOf(
-                    BottomBarItemData(
-                        iconSelected = Icons.Default.Home,
-                        iconUnselected = Icons.Outlined.Home,
-                        route = Screen.Home.route,
-                        selected = currentRoute == Screen.Home.route,
-                        onClick = {
-                            navController.navigate(Screen.Home.route) {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
+                BottomBarItemData(
+                    iconSelected = Icons.Default.Home,
+                    iconUnselected = Icons.Outlined.Home,
+                    route = Screen.Home.route,
+                    selected = currentRoute == Screen.Home.route,
+                    onClick = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
                         }
-                    ),
-                    BottomBarItemData(
-                        iconSelected = Icons.Default.Explore,
-                        iconUnselected = Icons.Outlined.Explore,
-                        route = Screen.Fishes.route,
-                        selected = currentRoute == Screen.Fishes.route,
-                        onClick = {
-                            navController.navigate(Screen.Fishes.route) {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
+                    }
+                ),
+                BottomBarItemData(
+                    iconSelected = Icons.Default.Explore,
+                    iconUnselected = Icons.Outlined.Explore,
+                    route = Screen.Fishes.route,
+                    selected = currentRoute == Screen.Fishes.route,
+                    onClick = {
+                        navController.navigate(Screen.Fishes.route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
                         }
-                    ),
-                    BottomBarItemData(
-                        iconSelected = Icons.Default.Home,
-                        iconUnselected = Icons.Outlined.Home,
-                        route = "",
-                        selected = false,
-                        onClick = {}
-                    ),
-                    BottomBarItemData(
-                        iconSelected = Icons.Default.Map,
-                        iconUnselected = Icons.Outlined.Map,
-                        route = Screen.Maps.route,
-                        selected = currentRoute == Screen.Maps.route,
-                        onClick = {
-                            navController.navigate(Screen.Maps.route) {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
+                    }
+                ),
+                BottomBarItemData(
+                    iconSelected = Icons.Default.Home,
+                    iconUnselected = Icons.Outlined.Home,
+                    route = "",
+                    selected = false,
+                    onClick = {}
+                ),
+                BottomBarItemData(
+                    iconSelected = Icons.Default.Map,
+                    iconUnselected = Icons.Outlined.Map,
+                    route = Screen.Maps.route,
+                    selected = currentRoute == Screen.Maps.route,
+                    onClick = {
+                        navController.navigate(Screen.Maps.route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
                         }
-                    ),
-                    BottomBarItemData(
-                        iconSelected = Icons.Default.Person,
-                        iconUnselected = Icons.Outlined.Person,
-                        route = Screen.Account.route,
-                        selected = currentRoute == Screen.Account.route,
-                        onClick = {
-                            navController.navigate(Screen.Account.route) {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
+                    }
+                ),
+                BottomBarItemData(
+                    iconSelected = Icons.Default.Person,
+                    iconUnselected = Icons.Outlined.Person,
+                    route = Screen.Account.route,
+                    selected = currentRoute == Screen.Account.route,
+                    onClick = {
+                        navController.navigate(Screen.Account.route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
                         }
-                    )
+                    }
+                )
             )
 
             // creating our navController
@@ -315,8 +316,8 @@ class MainActivity : ComponentActivity() {
                                     Text("Upload Image")
 
                                 }
-    //                                Text("Fish Name")
-    //                                Spacer(modifier = Modifier.height(12.dp))
+                                //                                Text("Fish Name")
+                                //                                Spacer(modifier = Modifier.height(12.dp))
                                 TextField(
                                     modifier = Modifier.fillMaxWidth(),
                                     value = namaIkan,
@@ -358,27 +359,27 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(modifier = Modifier.fillMaxWidth(),
                                 onClick = {
-                                val fish = Fish(
-                                    nama = namaIkan.text,
-                                    image = imageBitmap?.let {
-                                        val stream = ByteArrayOutputStream()
-                                        it.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                        stream.toByteArray()
-                                    },
-                                    berat = beratIkan.text.toDouble(),
-                                    harga = hargaIkan.text.toDouble(),
-                                    createdAt = "",
-                                    latitude = lokasi.latitude,
-                                    longitude = lokasi.longitude
-                                )
-                                if (isSheetEdited) {
-                                    fishViewModel.updateFish(fish, fishEdit.id)
-                                } else {
-                                    fishViewModel.insertFish(fish)
-                                }
-                                isSheetOpen = false
-                                isSheetEdited = false
-                            }) {
+                                    val fish = Fish(
+                                        nama = namaIkan.text,
+                                        image = imageBitmap?.let {
+                                            val stream = ByteArrayOutputStream()
+                                            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                            stream.toByteArray()
+                                        },
+                                        berat = beratIkan.text.toDouble(),
+                                        harga = hargaIkan.text.toDouble(),
+                                        createdAt = "",
+                                        latitude = lokasi.latitude,
+                                        longitude = lokasi.longitude
+                                    )
+                                    if (isSheetEdited) {
+                                        fishViewModel.updateFish(fish, fishEdit.id)
+                                    } else {
+                                        fishViewModel.insertFish(fish)
+                                    }
+                                    isSheetOpen = false
+                                    isSheetEdited = false
+                                }) {
                                 Text(
                                     if (isSheetEdited) {
                                         "Update Fish"
@@ -447,12 +448,19 @@ class MainActivity : ComponentActivity() {
                                     FishScreen(
                                         fishes = fishes,
                                         fishViewModel = fishViewModel,
-                                        onAddButtonClick = { isSheetOpen = true },
+                                        onAddButtonClick = {
+                                            val intent = Intent(this@MainActivity, LogActivity::class.java).apply {
+                                                putExtra("isEdit", false)
+                                            }
+                                            startActivity(intent)
+                                        },
                                     ) {
-                                        isSheetOpen = true
-                                        selectedFish = it
-                                        isSheetEdited = true
-
+                                        fishId ->
+                                        val intent = Intent(this@MainActivity, LogActivity::class.java).apply {
+                                            putExtra("isEdit", true)
+                                            putExtra("fishId", fishId)
+                                        }
+                                        startActivity(intent)
                                     }
                                 }
                                 composable(Screen.Camera.route) {
@@ -477,9 +485,17 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable(Screen.Account.route) {
                                     topBarTitle = "Account"
-//                                    AccountScreen()
-                                    AccountScreen(name)
+                                    val count = fishViewModel.getCount()
+                                        .collectAsState(initial = 0).value
+                                    AccountScreen(name, count = count){
+                                        (context as Activity).let {
+                                            val intent = it.intent
+                                            it.finish()
+                                            it.startActivity(intent)
+                                        }
+                                    }
                                 }
+
                             }
                         }
                     }
@@ -498,4 +514,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

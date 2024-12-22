@@ -184,7 +184,7 @@ fun GreetingSection(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 15.dp)
         ) {
-            Text(text = "Welcome!", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+            Text(text = "Whalecome!", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
             Text(text = "Have a nice day!")
         }
     }
@@ -206,7 +206,7 @@ fun WeatherCard(
             .padding(16.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.hd_bg),
+            painter = painterResource(id = R.drawable.hdwp),
             contentDescription = "",
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))

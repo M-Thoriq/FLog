@@ -27,4 +27,7 @@ interface FishDao {
 
     @Query("SELECT * FROM fishes WHERE id = :id")
     fun getFishById(id: Int): Flow<Fish>
+
+    @Query("SELECT COUNT(*) FROM fishes")
+    fun getCount(): Flow<Int>
 }

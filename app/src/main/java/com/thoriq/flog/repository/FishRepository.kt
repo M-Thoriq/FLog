@@ -23,6 +23,8 @@ class FishRepository(application: Application) {
         mFishDao = db.fishDao()
     }
 
+    fun getCount() : Flow<Int> = mFishDao.getCount()
+
     fun readAllData() : Flow<List<Fish>> = mFishDao.getAllFish()
 
     fun getFishById(id: Int): Flow<Fish> = mFishDao.getFishById(id)

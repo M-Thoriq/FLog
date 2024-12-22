@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -196,6 +197,9 @@ fun MapsScreen(
                 if (matchingLocations.size > 1) {
 
                     Row(
+                        modifier = Modifier.fillMaxSize().offset(y = (-20).dp).padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Button(onClick = {
                             // Move to the previous marker
@@ -203,29 +207,19 @@ fun MapsScreen(
                                 if (currentIndex > 0) currentIndex - 1 else matchingLocations.size - 1
                             moveToLocation(matchingLocations[currentIndex], cameraPositionState)
                         },
-                            modifier = Modifier,
-                            shape = RectangleShape
 
                         ) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Search Icon")
 
                         }
 
-                        HorizontalDivider(
-                            color = Color.Gray,
-                            modifier = Modifier
-                                .fillMaxHeight() // Match button height
-                                .width(1.dp)
-                                .padding(horizontal = 8.dp) // Optional padding around the divider
-                        )
+
 
                         Button(onClick = {
                             // Move to the next marker
                             currentIndex = (currentIndex + 1) % matchingLocations.size
                             moveToLocation(matchingLocations[currentIndex], cameraPositionState)
                         },
-                            modifier = Modifier,
-                            shape = RectangleShape
 
                         ) {
                             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Search Icon")

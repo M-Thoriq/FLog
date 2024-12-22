@@ -39,4 +39,6 @@ class FishViewModel(application: Application): ViewModel() {
         fish.createdAt = getCurrentDate()
         mRepository.deleteFish(fish)
     }
+
+    fun getCount() = mRepository.getCount()
 }
