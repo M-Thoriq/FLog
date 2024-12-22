@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.thoriq.flog.data.Fish
 import com.thoriq.flog.data.dao.FishDao
 
-@Database(entities = [Fish::class], version = 7)
+@Database(entities = [Fish::class], version = 8)
 abstract class FishDatabase : RoomDatabase() {
     abstract fun fishDao(): FishDao
 

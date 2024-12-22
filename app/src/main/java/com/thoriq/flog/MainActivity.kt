@@ -3,6 +3,8 @@ package com.thoriq.flog
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -56,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -79,7 +82,7 @@ import com.thoriq.flog.ui.theme.FlogTheme
 import com.thoriq.flog.viewModel.FishViewModel
 import com.thoriq.flog.viewModel.WeatherViewModel
 import com.thoriq.flog.viewModel.factory.ViewModelFactory
-
+import java.io.ByteArrayOutputStream
 
 
 class MainActivity : ComponentActivity() {
@@ -102,6 +105,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
+            var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
             var hasLocationPermission by remember { mutableStateOf(false) }
             var login by remember { mutableStateOf(false) }
             val context = LocalContext.current
@@ -239,6 +243,7 @@ class MainActivity : ComponentActivity() {
                             val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
                                 initial = Fish(
                                     nama = "",
+                                    image= null,
                                     berat = 0.0,
                                     harga = 0.0,
                                     createdAt = "",
@@ -302,6 +307,7 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                 val fish = Fish(
                                     nama = namaIkan.text,
+                                    image = null,
                                     berat = beratIkan.text.toDouble(),
                                     harga = hargaIkan.text.toDouble(),
                                     createdAt = "",

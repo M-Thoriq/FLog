@@ -129,7 +129,7 @@ fun MapsScreen(
 
 
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -193,9 +193,7 @@ fun MapsScreen(
                         Icon(Icons.Default.Search, contentDescription = "Search Icon", tint = Color.Black)
                     }
                 }
-            }
-
-            if (matchingLocations.size > 1) {
+                if (matchingLocations.size > 1) {
 
                     Row(
                     ) {
@@ -240,6 +238,10 @@ fun MapsScreen(
 
 
                 }
+
+            }
+
+
 
         }
 
