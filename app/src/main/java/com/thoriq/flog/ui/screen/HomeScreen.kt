@@ -62,6 +62,42 @@ import java.util.Date
 import java.util.Locale
 import kotlin.time.Duration.Companion.hours
 
+fun iconWeather(weatherCode : Int) : Int {
+    return when (weatherCode) {
+        0 -> R.drawable.sunny
+        1, 2, 3 -> R.drawable.partly_cloudy_day
+        45, 48 -> R.drawable.foggy
+        51, 53, 55 -> R.drawable.drizzle
+        56, 57 -> R.drawable.freezing_drizzle
+        61, 63, 65 -> R.drawable.rainy
+        66, 67 -> R.drawable.freezing_rain
+        71, 73, 75 -> R.drawable.snowfall
+        77 -> R.drawable.cloudy_snowing
+        80, 81, 82 -> R.drawable.rain_showers
+        85, 86 -> R.drawable.snow_showers
+        95 -> R.drawable.thunderstorm
+        else -> R.drawable.thunderstorm_hail
+    }
+}
+
+fun weatherCondition(weatherCode : Int) : String {
+    return when (weatherCode) {
+        0 -> "Sunny Day"
+        1, 2, 3 -> "Cloudy Day"
+        45, 48 -> "Foggy Day"
+        51, 53, 55 -> "Drizzly Day"
+        56, 57 -> "Freezing Drizzle"
+        61, 63, 65 -> "Rainy Day"
+        66, 67 -> "Freezing Rain"
+        71, 73, 75 -> "Snowy Day"
+        77 -> "Cloudy Snow"
+        80, 81, 82 -> "Rain Shower"
+        85, 86 -> "Snow Shower"
+        95 -> "Thunderstorm"
+        else -> "Heavy Thunderstorm"
+    }
+}
+
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -79,43 +115,14 @@ fun HomeScreen(
     ) {
         GreetingSection()
 
-        val iconWeather = when (nowWeathers?.weatherCode) {
-            0 -> R.drawable.sunny
-            1, 2, 3 -> R.drawable.partly_cloudy_day
-            45, 48 -> R.drawable.foggy
-            51, 53, 55 -> R.drawable.drizzle
-            56, 57 -> R.drawable.freezing_drizzle
-            61, 63, 65 -> R.drawable.rainy
-            66, 67 -> R.drawable.freezing_rain
-            71, 73, 75 -> R.drawable.snowfall
-            77 -> R.drawable.cloudy_snowing
-            80, 81, 82 -> R.drawable.rain_showers
-            85, 86 -> R.drawable.snow_showers
-            95 -> R.drawable.thunderstorm
-            else -> R.drawable.thunderstorm_hail
-        }
-        val weatherCondition = when (nowWeathers?.weatherCode) {
-            0 -> "Sunny Day"
-            1, 2, 3 -> "Cloudy Day"
-            45, 48 -> "Foggy Day"
-            51, 53, 55 -> "Drizzly Day"
-            56, 57 -> "Freezing Drizzle"
-            61, 63, 65 -> "Rainy Day"
-            66, 67 -> "Freezing Rain"
-            71, 73, 75 -> "Snowy Day"
-            77 -> "Cloudy Snow"
-            80, 81, 82 -> "Rain Shower"
-            85, 86 -> "Snow Shower"
-            95 -> "Thunderstorm"
-            else -> "Heavy Thunderstorm"
-        }
+
         if (isLoaded.collectAsState(initial = false).value) {
             WeatherCard(
                 temperature = "${nowWeathers?.Temp}°C",
-                condition = weatherCondition,
+                condition = weatherCondition(nowWeathers?.weatherCode ?: 0),
                 location = "Medan",
                 time = "${getLocalHour()} WIB",
-                icon = iconWeather,
+                icon = iconWeather(nowWeathers?.weatherCode ?: 0),
                 weatherList = weatherViewModel.weatherList
             )
         } else {
@@ -193,7 +200,7 @@ fun WeatherCard(
             .padding(16.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.hd_wallpaper_rainy_forest_forest_green_nature_new_rain_road_thumbnail),
+            painter = painterResource(id = R.drawable.hdwp),
             contentDescription = "",
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
@@ -213,7 +220,7 @@ fun WeatherCard(
 
                 ,
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = blueTransparent),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Row(
@@ -335,7 +342,7 @@ fun WeatherPreviewItem(weatherPreview: Weather, icon: Int) {
             modifier = Modifier.padding(bottom = 4.dp),
         )
         Icon(
-            painter = painterResource(icon), contentDescription = "",
+            painter = painterResource(iconWeather(weatherPreview.weatherCode)), contentDescription = "",
             modifier = Modifier
                 .size(42.dp)
                 .clip(CircleShape)
