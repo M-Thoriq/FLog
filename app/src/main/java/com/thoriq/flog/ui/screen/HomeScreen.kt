@@ -49,9 +49,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import com.thoriq.flog.RecentCatchItem
+import com.thoriq.flog.data.Fish
 import com.thoriq.flog.data.Weather
 import com.thoriq.flog.repository.WeatherRepository
 import com.thoriq.flog.ui.theme.blueTransparent
+import com.thoriq.flog.viewModel.FishViewModel
 import com.thoriq.flog.viewModel.WeatherViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -101,7 +103,8 @@ fun weatherCondition(weatherCode : Int) : String {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    weatherViewModel: WeatherViewModel
+    weatherViewModel: WeatherViewModel,
+    fishes: List<Fish>
 ) {
     val context = LocalContext.current
 
@@ -134,7 +137,10 @@ fun HomeScreen(
                 CircularProgressIndicator()
             }
         }
-        RecentCatch()
+
+        RecentCatch(
+            fishes = fishes
+        )
     }
 }
 
@@ -297,6 +303,7 @@ fun WeatherCard(
 @Composable
 fun RecentCatch(
     modifier: Modifier = Modifier,
+    fishes: List<Fish>
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -315,14 +322,14 @@ fun RecentCatch(
 //            color = Color.Blue
 //        )
     }
-    val recentCatch = com.thoriq.flog.repository.RecentCatchRepository()
-    val getAllData = recentCatch.getAllData()
+//    val recentCatch = com.thoriq.flog.repository.RecentCatchRepository()
+//    val getAllData = recentCatch.getAllData()
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.padding(16.dp)
     ) {
-        items(items = getAllData) { recentCatch ->
-            RecentCatchItem(recentCatch = recentCatch)
+        items(fishes) { fish ->
+            RecentCatchItem(fish)
         }
 
     }

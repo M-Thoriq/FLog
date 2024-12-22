@@ -54,13 +54,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -148,14 +151,19 @@ fun FishScreen(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Column(
-                                modifier = Modifier.weight(8f)
+                                modifier = Modifier.weight(8f),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
                             ) {
                                 if (fish.image != null) {
                                     val imageBitmap = BitmapFactory.decodeByteArray(fish.image, 0, fish.image!!.size).asImageBitmap()
                                     Image(
                                         bitmap = imageBitmap,
                                         contentDescription = "Fish Image",
-                                        modifier = Modifier.size(48.dp) // adjust as needed
+                                        modifier = Modifier
+                                            .size(116.dp)
+                                            .clip(RectangleShape),
+                                        contentScale = ContentScale.Crop
                                     )
                                 } else {
                                     Icon(
@@ -168,16 +176,17 @@ fun FishScreen(
                             Column(
                                 modifier = Modifier
                                     .weight(15f)
-                                    .padding(start = 8.dp)
-
+                                    .padding(start = 8.dp),
+                                verticalArrangement = Arrangement.Center,
                             ) {
                                 Row {
                                     Text(
                                         " ${fish.nama}",
                                         style = MaterialTheme.typography.titleLarge,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        modifier = Modifier.padding(bottom = 12.dp),
-                                        fontWeight = FontWeight.Bold
+                                        modifier = Modifier
+                                            .padding(bottom = 12.dp),
+                                        fontWeight = FontWeight.Bold,
                                     )
                                 }
                                 Row {

@@ -89,184 +89,184 @@ fun AccountScreen(name:String,modifier: Modifier = Modifier) {
 
 
         }
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Row(
-            modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorite",
-                        tint = Color.Red,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-                Column(
-                    Modifier.weight(5f)
-                ) {
-                    Text(
-                        "Favorite",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "More",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = "Favorite",
-                        tint = Color.Yellow,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-                Column(
-                    Modifier.weight(5f)
-                ) {
-                    Text(
-                        "Notifications",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "More",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                HorizontalDivider()
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Favorite",
-                        tint = Color.Yellow,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-                Column(
-                    Modifier.weight(5f)
-                ) {
-                    Text(
-                        "Statistic",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "More",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Favorite",
-                        tint = Color.Black,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-                Column(
-                    Modifier.weight(5f)
-                ) {
-                    Text(
-                        "Settings",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "More",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 48.dp)
-            ) {
-                HorizontalDivider()
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                        contentDescription = "Favorite",
-                        tint = Color.Red,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+//        Column(
+//            modifier = Modifier
+//                .padding(16.dp)
+//        ) {
+//            Row(
+//            modifier = Modifier.padding(bottom = 32.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Favorite,
+//                        contentDescription = "Favorite",
+//                        tint = Color.Red,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//                Column(
+//                    Modifier.weight(5f)
+//                ) {
+//                    Text(
+//                        "Favorite",
+//                        style = MaterialTheme.typography.titleLarge,
+//                        fontWeight = FontWeight.Medium
+//                    )
+//                }
+//                Column(
+//                    horizontalAlignment = Alignment.End,
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+//                        contentDescription = "More",
+//                        tint = Color.Gray,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//            }
+//            Row(
+//                modifier = Modifier.padding(bottom = 32.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Notifications,
+//                        contentDescription = "Favorite",
+//                        tint = Color.Yellow,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//                Column(
+//                    Modifier.weight(5f)
+//                ) {
+//                    Text(
+//                        "Notifications",
+//                        style = MaterialTheme.typography.titleLarge,
+//                        fontWeight = FontWeight.Medium
+//                    )
+//                }
+//                Column(
+//                    horizontalAlignment = Alignment.End,
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+//                        contentDescription = "More",
+//                        tint = Color.Gray,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//            }
+//            Row(
+//                modifier = Modifier.padding(bottom = 32.dp)
+//            ) {
+//                HorizontalDivider()
+//            }
+//            Row(
+//                modifier = Modifier.padding(bottom = 32.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Star,
+//                        contentDescription = "Favorite",
+//                        tint = Color.Yellow,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//                Column(
+//                    Modifier.weight(5f)
+//                ) {
+//                    Text(
+//                        "Statistic",
+//                        style = MaterialTheme.typography.titleLarge,
+//                        fontWeight = FontWeight.Medium
+//                    )
+//                }
+//                Column(
+//                    horizontalAlignment = Alignment.End,
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+//                        contentDescription = "More",
+//                        tint = Color.Gray,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//            }
+//            Row(
+//                modifier = Modifier.padding(bottom = 32.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Settings,
+//                        contentDescription = "Favorite",
+//                        tint = Color.Black,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//                Column(
+//                    Modifier.weight(5f)
+//                ) {
+//                    Text(
+//                        "Settings",
+//                        style = MaterialTheme.typography.titleLarge,
+//                        fontWeight = FontWeight.Medium
+//                    )
+//                }
+//                Column(
+//                    horizontalAlignment = Alignment.End,
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+//                        contentDescription = "More",
+//                        tint = Color.Gray,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
+//            }
+//            Row(
+//                modifier = Modifier.padding(bottom = 48.dp)
+//            ) {
+//                HorizontalDivider()
+//            }
+//            Row(
+//                modifier = Modifier.padding(bottom = 32.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+//                        contentDescription = "Favorite",
+//                        tint = Color.Red,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
                 Button(onClick = {
                     login.clearLoginState(context)
                 },modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)) {
+                    .padding(vertical = 32.dp)) {
                     Text(
                         "Log Out",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Medium
                     )
                 }
-
-
-
-            }
-        }
+//
+//
+//
+//            }
+//        }
     }
 }
