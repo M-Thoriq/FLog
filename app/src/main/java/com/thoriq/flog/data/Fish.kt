@@ -1,5 +1,6 @@
 package com.thoriq.flog.data
 
+import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -12,8 +13,12 @@ import java.sql.Timestamp
 @Parcelize
 data class Fish(
     @PrimaryKey(autoGenerate = true)
+
     @ColumnInfo(name = "id")
     var id: Int = 0,
+
+    @ColumnInfo(name = "image")
+    var image: ByteArray?,
 
     @ColumnInfo(name = "nama")
     var nama: String?,

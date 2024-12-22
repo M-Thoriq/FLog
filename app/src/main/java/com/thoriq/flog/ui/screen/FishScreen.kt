@@ -1,6 +1,7 @@
 package com.thoriq.flog.ui.screen
 
 import android.app.Application
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.EditText
 import androidx.compose.foundation.Image
@@ -53,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
@@ -148,11 +150,20 @@ fun FishScreen(
                             Column(
                                 modifier = Modifier.weight(8f)
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_flog),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
+                                if (fish.image != null) {
+                                    val imageBitmap = BitmapFactory.decodeByteArray(fish.image, 0, fish.image!!.size).asImageBitmap()
+                                    Image(
+                                        bitmap = imageBitmap,
+                                        contentDescription = "Fish Image",
+                                        modifier = Modifier.size(48.dp) // adjust as needed
+                                    )
+                                } else {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_flog),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                             Column(
                                 modifier = Modifier
