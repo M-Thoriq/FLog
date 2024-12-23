@@ -96,6 +96,8 @@ dependencies {
     implementation(libs.gson)
 //    Splash Screen
     implementation(libs.androidx.core.splashscreen)
+//    Image Cropper
+    implementation("io.github.mr0xf00:easycrop:0.1.1")
 
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.firebase.auth.ktx)

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FLog</string>
     <string name="title_activity_log">LogActivity</string>
+    <string name="fileprovider">Cameraa Authority</string>
 </resources>

@@ -236,165 +236,165 @@ class MainActivity : ComponentActivity() {
                     WeatherViewModel::class.java
                 )
 
-            if (isSheetOpen) {
-                FlogTheme {
-                    ModalBottomSheet(
-                        sheetState = sheetState,
-                        onDismissRequest = {
-                            isSheetOpen = false
-                            isSheetEdited = false
-                        },
-                    ) {
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            Text(text = if (isSheetEdited) "Edit Fish" else "Add Fish", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-
-                            Spacer(modifier = Modifier.height(16.dp))
-                            // Add EditText for fish name
-
-                            val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
-                                initial = Fish(
-                                    nama = "",
-                                    image= null,
-                                    berat = 0.0,
-                                    harga = 0.0,
-                                    createdAt = "",
-                                    latitude = 0.0,
-                                    longitude = 0.0
-                                )
-                            )
-                            var namaIkan by remember { mutableStateOf(TextFieldValue("")) }
-                            var beratIkan by remember { mutableStateOf(TextFieldValue("")) }
-                            var hargaIkan by remember { mutableStateOf(TextFieldValue("")) }
-                            val coroutineScope = rememberCoroutineScope()
-                            val pickMedia = rememberLauncherForActivityResult(
-                                ActivityResultContracts.PickVisualMedia()
-                            ) { uri ->
-                                uri?.let {
-                                    coroutineScope.launch {
-                                        val imageRequest = ImageRequest.Builder(context)
-                                            .data(uri)
-                                            .build()
-                                        val imageLoader = coil.ImageLoader(context)
-                                        val bitmap = (imageLoader.execute(imageRequest) as SuccessResult).drawable.toBitmap()
-                                        imageBitmap = bitmap
-                                    }
-                                }
-                            }
-
-                            LaunchedEffect(fishEdit) {
-                                if (isSheetEdited) {
-                                    namaIkan = TextFieldValue(fishEdit.nama!!)
-                                    beratIkan = TextFieldValue(fishEdit.berat.toString())
-                                    hargaIkan = TextFieldValue(fishEdit.harga.toString())
-
-                                }
-                            }
-
-
-
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                imageBitmap?.let { uri ->
-                                    AsyncImage(
-                                        model = uri,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .padding(4.dp)
-                                            .requiredSize(300.dp)
-                                    )
-                                }
-
-                                Button(
-                                    onClick = {
-                                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                                    }
-                                ) {
-                                    Text("Upload Image")
-
-                                }
-                                //                                Text("Fish Name")
-                                //                                Spacer(modifier = Modifier.height(12.dp))
-                                TextField(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    value = namaIkan,
-                                    onValueChange = {
-                                        namaIkan = it
-                                    },
-                                    label = { Text(text = "Fish Name") },
-                                    placeholder = { Text(text = "Salmon") },
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Icon(imageVector = Icons.Default.MonetizationOn, contentDescription = "Ikan", tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(32.dp))
-                                    TextField(
-                                        modifier = Modifier.width(120.dp),
-                                        value = hargaIkan,
-                                        onValueChange = {
-                                            hargaIkan = it
-                                        },
-                                        label = { Text(text = "Price/kg") },
-                                        placeholder = { Text(text = "0.0 Rp") },
-                                    )
-                                }
-
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Icon(imageVector = Icons.Default.Balance, contentDescription = "Ikan", tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(32  .dp))
-                                    TextField(
-                                        modifier = Modifier.width(150.dp),
-                                        value = beratIkan,
-                                        onValueChange = {
-                                            beratIkan = it
-                                        },
-                                        label = { Text(text = "Weight") },
-                                        placeholder = { Text(text = "0.0 Kg") },
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(modifier = Modifier.fillMaxWidth(),
-                                onClick = {
-                                    val fish = Fish(
-                                        nama = namaIkan.text,
-                                        image = imageBitmap?.let {
-                                            val stream = ByteArrayOutputStream()
-                                            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                            stream.toByteArray()
-                                        },
-                                        berat = beratIkan.text.toDouble(),
-                                        harga = hargaIkan.text.toDouble(),
-                                        createdAt = "",
-                                        latitude = lokasi.latitude,
-                                        longitude = lokasi.longitude
-                                    )
-                                    if (isSheetEdited) {
-                                        fishViewModel.updateFish(fish, fishEdit.id)
-                                    } else {
-                                        fishViewModel.insertFish(fish)
-                                    }
-                                    isSheetOpen = false
-                                    isSheetEdited = false
-                                }) {
-                                Text(
-                                    if (isSheetEdited) {
-                                        "Update Fish"
-                                    } else {
-                                        "Add Fish"
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                imageBitmap = null
-            }
+//            if (isSheetOpen) {
+//                FlogTheme {
+//                    ModalBottomSheet(
+//                        sheetState = sheetState,
+//                        onDismissRequest = {
+//                            isSheetOpen = false
+//                            isSheetEdited = false
+//                        },
+//                    ) {
+//
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(16.dp)
+//                        ) {
+//                            Text(text = if (isSheetEdited) "Edit Fish" else "Add Fish", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+//
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            // Add EditText for fish name
+//
+//                            val fishEdit by fishViewModel.getFishById(selectedFish).collectAsState(
+//                                initial = Fish(
+//                                    nama = "",
+//                                    image= null,
+//                                    berat = 0.0,
+//                                    harga = 0.0,
+//                                    createdAt = "",
+//                                    latitude = 0.0,
+//                                    longitude = 0.0
+//                                )
+//                            )
+//                            var namaIkan by remember { mutableStateOf(TextFieldValue("")) }
+//                            var beratIkan by remember { mutableStateOf(TextFieldValue("")) }
+//                            var hargaIkan by remember { mutableStateOf(TextFieldValue("")) }
+//                            val coroutineScope = rememberCoroutineScope()
+//                            val pickMedia = rememberLauncherForActivityResult(
+//                                ActivityResultContracts.PickVisualMedia()
+//                            ) { uri ->
+//                                uri?.let {
+//                                    coroutineScope.launch {
+//                                        val imageRequest = ImageRequest.Builder(context)
+//                                            .data(uri)
+//                                            .build()
+//                                        val imageLoader = coil.ImageLoader(context)
+//                                        val bitmap = (imageLoader.execute(imageRequest) as SuccessResult).drawable.toBitmap()
+//                                        imageBitmap = bitmap
+//                                    }
+//                                }
+//                            }
+//
+//                            LaunchedEffect(fishEdit) {
+//                                if (isSheetEdited) {
+//                                    namaIkan = TextFieldValue(fishEdit.nama!!)
+//                                    beratIkan = TextFieldValue(fishEdit.berat.toString())
+//                                    hargaIkan = TextFieldValue(fishEdit.harga.toString())
+//
+//                                }
+//                            }
+//
+//
+//
+//                            Column(modifier = Modifier.fillMaxWidth()) {
+//                                imageBitmap?.let { uri ->
+//                                    AsyncImage(
+//                                        model = uri,
+//                                        contentDescription = null,
+//                                        modifier = Modifier
+//                                            .padding(4.dp)
+//                                            .requiredSize(300.dp)
+//                                    )
+//                                }
+//
+//                                Button(
+//                                    onClick = {
+//                                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//                                    }
+//                                ) {
+//                                    Text("Upload Image")
+//
+//                                }
+//                                //                                Text("Fish Name")
+//                                //                                Spacer(modifier = Modifier.height(12.dp))
+//                                TextField(
+//                                    modifier = Modifier.fillMaxWidth(),
+//                                    value = namaIkan,
+//                                    onValueChange = {
+//                                        namaIkan = it
+//                                    },
+//                                    label = { Text(text = "Fish Name") },
+//                                    placeholder = { Text(text = "Salmon") },
+//                                )
+//                            }
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+//                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+//                                    Icon(imageVector = Icons.Default.MonetizationOn, contentDescription = "Ikan", tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(32.dp))
+//                                    TextField(
+//                                        modifier = Modifier.width(120.dp),
+//                                        value = hargaIkan,
+//                                        onValueChange = {
+//                                            hargaIkan = it
+//                                        },
+//                                        label = { Text(text = "Price/kg") },
+//                                        placeholder = { Text(text = "0.0 Rp") },
+//                                    )
+//                                }
+//
+//                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+//                                    Icon(imageVector = Icons.Default.Balance, contentDescription = "Ikan", tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(32  .dp))
+//                                    TextField(
+//                                        modifier = Modifier.width(150.dp),
+//                                        value = beratIkan,
+//                                        onValueChange = {
+//                                            beratIkan = it
+//                                        },
+//                                        label = { Text(text = "Weight") },
+//                                        placeholder = { Text(text = "0.0 Kg") },
+//                                    )
+//                                }
+//                            }
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            Button(modifier = Modifier.fillMaxWidth(),
+//                                onClick = {
+//                                    val fish = Fish(
+//                                        nama = namaIkan.text,
+//                                        image = imageBitmap?.let {
+//                                            val stream = ByteArrayOutputStream()
+//                                            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//                                            stream.toByteArray()
+//                                        },
+//                                        berat = beratIkan.text.toDouble(),
+//                                        harga = hargaIkan.text.toDouble(),
+//                                        createdAt = "",
+//                                        latitude = lokasi.latitude,
+//                                        longitude = lokasi.longitude
+//                                    )
+//                                    if (isSheetEdited) {
+//                                        fishViewModel.updateFish(fish, fishEdit.id)
+//                                    } else {
+//                                        fishViewModel.insertFish(fish)
+//                                    }
+//                                    isSheetOpen = false
+//                                    isSheetEdited = false
+//                                }) {
+//                                Text(
+//                                    if (isSheetEdited) {
+//                                        "Update Fish"
+//                                    } else {
+//                                        "Add Fish"
+//                                    }
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            else {
+//                imageBitmap = null
+//            }
 
             if (!login) {
                 FlogTheme {
@@ -480,7 +480,7 @@ class MainActivity : ComponentActivity() {
                                         latitude = WeatherRepository.latitude,
                                         longitude = WeatherRepository.longitude,
                                         fishes = fishes,
-                                        lokasi = lokasi
+                                        lokasi = weatherViewModel.lokasi
                                     )
                                 }
                                 composable(Screen.Account.route) {

@@ -61,6 +61,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -162,7 +163,7 @@ fun FishScreen(
                                         contentDescription = "Fish Image",
                                         modifier = Modifier
                                             .size(116.dp)
-                                            .clip(RectangleShape),
+                                            .clip(RoundedCornerShape(4.dp)),
                                         contentScale = ContentScale.Crop
                                     )
                                 } else {
@@ -194,6 +195,7 @@ fun FishScreen(
                                         "Berat: ${fish.berat} kg",
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier.padding(start = 5.dp)
                                     )
                                 }
@@ -202,6 +204,7 @@ fun FishScreen(
                                         "Harga: Rp ${fish.harga}",
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier.padding(start = 5.dp)
 
                                     )

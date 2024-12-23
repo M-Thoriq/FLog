@@ -64,7 +64,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.time.Duration.Companion.hours
 
-fun iconWeather(weatherCode : Int) : Int {
+fun iconWeather(weatherCode: Int): Int {
     return when (weatherCode) {
         0 -> R.drawable.sunny
         1, 2, 3 -> R.drawable.partly_cloudy_day
@@ -82,7 +82,7 @@ fun iconWeather(weatherCode : Int) : Int {
     }
 }
 
-fun weatherCondition(weatherCode : Int) : String {
+fun weatherCondition(weatherCode: Int): String {
     return when (weatherCode) {
         0 -> "Sunny Day"
         1, 2, 3 -> "Cloudy Day"
@@ -173,7 +173,8 @@ fun GreetingSection(modifier: Modifier = Modifier) {
     ) {
         Box(modifier = Modifier.padding(8.dp)) {
             Image(
-                painter = painterResource(id = R.drawable._3f1eda09c78fa01cb765443993748ee), contentDescription = "Image Akun",
+                painter = painterResource(id = R.drawable._3f1eda09c78fa01cb765443993748ee),
+                contentDescription = "Image Akun",
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
@@ -222,9 +223,7 @@ fun WeatherCard(
             Card(
                 modifier = modifier
 
-                    .fillMaxWidth()
-
-                ,
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -232,8 +231,7 @@ fun WeatherCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                    ,
+                        .padding(16.dp),
 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -322,16 +320,22 @@ fun RecentCatch(
 //            color = Color.Blue
 //        )
     }
-//    val recentCatch = com.thoriq.flog.repository.RecentCatchRepository()
-//    val getAllData = recentCatch.getAllData()
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(16.dp)
-    ) {
-        items(fishes) { fish ->
-            RecentCatchItem(fish)
-        }
+    if (fishes.isEmpty()) {
+        Text(
+            text = "No recent catch",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(16.dp)
+        )
+    } else {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            items(fishes) { fish ->
+                RecentCatchItem(fish)
+            }
 
+        }
     }
 }
 
@@ -349,7 +353,8 @@ fun WeatherPreviewItem(weatherPreview: Weather, icon: Int) {
             modifier = Modifier.padding(bottom = 4.dp),
         )
         Icon(
-            painter = painterResource(iconWeather(weatherPreview.weatherCode)), contentDescription = "",
+            painter = painterResource(iconWeather(weatherPreview.weatherCode)),
+            contentDescription = "",
             modifier = Modifier
                 .size(42.dp)
                 .clip(CircleShape)
